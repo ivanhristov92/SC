@@ -61,3 +61,5 @@ keystone.set('nav', {
 
 
 keystone.start();
+
+module.exports = keystone;
