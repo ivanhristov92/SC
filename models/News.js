@@ -18,8 +18,8 @@ News.add({
 		brief: { type: Types.Html, wysiwyg: true, height: 150 },
 		extended: { type: Types.Html, wysiwyg: true, height: 400 }
 	},
-	createdAt: { type: Date, default: Date.now },
-	visibleAtMainPage: { type: Types.Boolean, required: false }
+	featuredImage: Types.CloudinaryImage,
+	createdAt: { type: Date, default: Date.now }
 });
 
 News.defaultColumns = 'title, state|20%, author|20%, publishedDate|20%';

@@ -28,11 +28,27 @@ keystone.init({
 		extname: '.hbs',
 	}).engine,
 
+	"wysiwyg cloudinary images": true,
+	'wysiwyg additional buttons': 'media',
+	"wysiwyg additional plugins": "media",
 	'auto update': true,
 	'session': true,
 	'auth': true,
 	'user model': 'User',
 });
+
+keystone.set('cloudinary config', { cloud_name: 'dnhanaafj', api_key: '835575211177616', api_secret: 'Czn1Epw3Y-LL_cBg5AQT2Xh3YNA' });
+// or
+// keystone.set('cloudinary config', 'cloudinary://api_key:api_secret@cloud_name' );
+
+// optional, will prefix all built-in tags with 'keystone_'
+keystone.set('cloudinary prefix', 'sc');
+
+// // optional, will prefix each image public_id with [{prefix}]/{list.path}/{field.path}/
+// keystone.set('cloudinary folders', true);
+//
+// // optional, will force cloudinary to serve images over https
+// keystone.set('cloudinary secure', true);
 
 // Load your project's Models
 keystone.import('models');
