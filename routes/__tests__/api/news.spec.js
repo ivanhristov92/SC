@@ -132,7 +132,6 @@ describe('News module', () => {
 				chai.request(server)
 				.get('/api/news?last=3')
 				.end((err,res)=>{
-					console.log(res.body)
 					expect(res.body.news.length).to.be.eql(3);
 					expect(res.body.news[0].title).to.be.eql("sixth");
 					expect(res.body.news[1].title).to.be.eql("fifth");
@@ -166,7 +165,6 @@ describe('News module', () => {
 					chai.request(server)
 						.get('/api/news?last=4')
 						.end((err,res)=>{
-							console.log(res.body)
 							expect(res.body.news.length).to.be.eql(4);
 							expect(res.body.news[0].title).to.be.eql("sixth");
 							expect(res.body.news[1].title).to.be.eql("fifth");
