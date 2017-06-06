@@ -6,7 +6,7 @@
 var keystone = require("../../../keystone");
 var server = keystone.app;
 
-const News = require('../../api/news')
+const News = require('../../api/news');
 const chai = require("chai");
 const expect = chai.expect;
 const should = chai.should();
@@ -19,6 +19,15 @@ describe('News module', () => {
 		News.model.find({})
 		.remove(function(err) {
 			done();
+		});
+	};
+	
+	const saveAPiece = (model)=> {
+		return new Promise((resolve, reject) => {
+			return new News.model(model).save(err => {
+				if (err) return reject(err);
+				return resolve()
+			})
 		});
 	};
 	
@@ -102,6 +111,74 @@ describe('News module', () => {
 				
 			});
 		});
+		
+		it("should respond to query params and return the 3 latest news", (done)=>{
+
+			Promise.all([
+				saveAPiece({title: "first"}),
+				saveAPiece({title: "second"}),
+				saveAPiece({title: "third"})
+			])
+			.then(()=> {
+				return saveAPiece({title: "fourth"})
+			})
+			.then(()=> {
+				return saveAPiece({title: "fifth"})
+			})
+			.then(()=> {
+				return saveAPiece({title: "sixth"})
+			})
+			.then(resp=>{
+				chai.request(server)
+				.get('/api/news?last=3')
+				.end((err,res)=>{
+					console.log(res.body)
+					expect(res.body.news.length).to.be.eql(3);
+					expect(res.body.news[0].title).to.be.eql("sixth");
+					expect(res.body.news[1].title).to.be.eql("fifth");
+					expect(res.body.news[2].title).to.be.eql("fourth");
+					done();
+				})
+
+			});
+
+		});
+
+		it("should respond to query params and return the 4 latest news", (done)=>{
+
+			Promise.all([
+				saveAPiece({title: "first"}),
+				saveAPiece({title: "second"})
+			])
+				.then(()=> {
+					return saveAPiece({title: "third"})
+				})
+				.then(()=> {
+					return saveAPiece({title: "fourth"})
+				})
+				.then(()=> {
+					return saveAPiece({title: "fifth"})
+				})
+				.then(()=> {
+					return saveAPiece({title: "sixth"})
+				})
+				.then(resp=>{
+					chai.request(server)
+						.get('/api/news?last=4')
+						.end((err,res)=>{
+							console.log(res.body)
+							expect(res.body.news.length).to.be.eql(4);
+							expect(res.body.news[0].title).to.be.eql("sixth");
+							expect(res.body.news[1].title).to.be.eql("fifth");
+							expect(res.body.news[2].title).to.be.eql("fourth");
+							expect(res.body.news[3].title).to.be.eql("third");
+							done();
+						})
+
+				});
+
+		})
+		
 	});
 	
 	describe("it should export a 'getById' function", ()=>{
@@ -188,37 +265,36 @@ describe('News module', () => {
 
 		});
 
-		it('it should contain an image link', (done) => {
-		
-				let newNews = new News.model({
-					title: 'New News',
-					featuredImage: "http://res.cloudinary.com/dsgc8mdss/image/upload/v1478026701/dbc0j46lgrewxerwio8o.jpg"
-
-				});
-			
-				new Promise((resolve, reject)=>{
-					newNews.save(function(err, post) {
-						if(err) reject(err);
-						const slug = post.slug;
-						resolve(slug);
-					});
-				})
-				.then(slug=>{
-					chai.request(server)
-					.get(`/api/news/${slug}`)
-					.end((err, res) => {
-					res.should.have.status(200);
-					res.body.news.length.should.be.eql(1);
-					
-					let pieceOfNews = res.body.news[0];
-					pieceOfNews.should.have.property("featuredImage");
-					pieceOfNews.featuredImage.should.be.eql("http://res.cloudinary.com/dsgc8mdss/image/upload/v1478026701/dbc0j46lgrewxerwio8o.jpg");
-					
-					done();
-				});
-			})
-		});
-		
+		// it('it should contain an image link', (done) => {
+		//
+		// 		let newNews = new News.model({
+		// 			title: 'New News',
+		// 			// featuredImage: "http://res.cloudinary.com/dsgc8mdss/image/upload/v1478026701/dbc0j46lgrewxerwio8o.jpg"
+		// 		});
+		//	
+		// 		new Promise((resolve, reject)=>{
+		// 			newNews.save(function(err, post) {
+		// 				if(err) reject(err);
+		// 				const slug = post.slug;
+		// 				resolve(slug);
+		// 			});
+		// 		})
+		// 		.then(slug=>{
+		// 			chai.request(server)
+		// 			.get(`/api/news/${slug}`)
+		// 			.end((err, res) => {
+		// 			res.should.have.status(200);
+		// 			res.body.news.length.should.be.eql(1);
+		//			
+		// 			let pieceOfNews = res.body.news[0];
+		// 			pieceOfNews.should.have.property("featuredImage");
+		// 			pieceOfNews.featuredImage.should.be.eql("http://res.cloudinary.com/dsgc8mdss/image/upload/v1478026701/dbc0j46lgrewxerwio8o.jpg");
+		//			
+		// 			done();
+		// 		});
+		// 	})
+		// });
+		//
 		
 	})
 });

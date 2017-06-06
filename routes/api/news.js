@@ -27,19 +27,39 @@ exports.model = News.model;
  * List News
  */
 
-exports.list = function( req, res ) {
-	return new Promise((resolve, reject)=>{
-			/**
-			 * @param news: Array<PieceOfNews>
-			 */
-			News.model.find().exec( function( err, news ) {
-			if (err) return reject(res.apiError('database error', err));
-			resolve(res.apiResponse({
-				news: news
-			}));
-		});
-	})
-};
+const getAllNews = (req, res)=>
+	new Promise((resolve, reject)=>{
+	/**
+	 * @param news: Array<PieceOfNews>
+	 */
+	News.model.find().exec( function( err, news ) {
+		if (err) return reject(res.apiError('database error', err));
+		resolve(res.apiResponse({
+			news: news
+		}));
+	});
+});
+
+const getLastNNews = (req,res)=> N =>
+	new Promise((resolve, reject)=>{
+	/**
+	 * @param news: Array<PieceOfNews>
+	 */
+	News.model.find()
+		.sort('-createdAt')
+		.limit(N)
+		.exec( function( err, news ) {
+		if (err) return reject(res.apiError('database error', err));
+		resolve(res.apiResponse({
+			news: news
+		}));
+	});
+});
+
+exports.list = ( req, res ) =>
+	req.query.last ?
+	getLastNNews(req, res)(req.query.last) :
+	getAllNews(req,res);
 
 
 /**
