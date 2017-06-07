@@ -74,6 +74,7 @@ exports.getById = function( req, res ) {
 			 */
 			.exec( function( err, news ) {
 				if (err) return reject(res.apiError('database error', err));
+				// TODO transform it
 				resolve(res.apiResponse({
 					news: news
 				}));

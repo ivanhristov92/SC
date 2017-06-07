@@ -53,7 +53,7 @@ keystone.set('cloudinary config', { cloud_name: 'dnhanaafj', api_key: '835575211
 keystone.set('cloudinary prefix', 'sc');
 
 // // optional, will prefix each image public_id with [{prefix}]/{list.path}/{field.path}/
-// keystone.set('cloudinary folders', true);
+keystone.set('cloudinary folders', true);
 //
 // // optional, will force cloudinary to serve images over https
 // keystone.set('cloudinary secure', true);
