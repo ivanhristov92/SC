@@ -66,14 +66,15 @@ describe('News module', () => {
 
 
 		it('it should GET all the news after adding "new with title only"', (done) => {
-			let newNews = new News.model({
-				title: {
-					en: 'New News',
-					bg: "Novi novini"
-				},
-			});
+			
 	
-			newNews.save(function(err) {
+			saveAPiece({
+				title: {
+					en: "Some title",
+					bg: "Nqkakvo zaglavie"
+				}
+			})
+			.then(()=>{
 				// post has been saved	
 				chai.request(server)
 					.get('/api/en/news')
@@ -100,7 +101,7 @@ describe('News module', () => {
 			newNews.save(function(err) {
 				// post has been saved	
 				chai.request(server)
-				.get('/api/news')
+				.get('/api/en/news')
 				.end((err, res) => {
 					expect(res.body.news.length).to.be.eql(1);
 					let pieceOfNews = res.body.news[0];
