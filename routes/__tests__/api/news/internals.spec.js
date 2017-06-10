@@ -197,5 +197,16 @@ describe('News module Internal Functions', () => {
 
 		});
 
+
+
+		describe('it should export a "getEnglishVersion" function', () => {
+
+			it('getEnglishVersion should be a function', () => {
+				expect(NewsInt.getEnglishVersion).to.be.a("Function")
+			});
+			
+
+		});
+
 	});
 });
