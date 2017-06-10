@@ -6,7 +6,7 @@
 var keystone = require("../../../keystone");
 var server = keystone.app;
 
-const News = require('../../api/news');
+const News = require('../../api/news/news-main');
 const chai = require("chai");
 const expect = chai.expect;
 const should = chai.should();
@@ -41,7 +41,7 @@ describe('News module', () => {
 
 		it('it should return a Promise', (done) => {
 			let newsListResult = chai.request(server)
-				.get('/api/news')
+				.get('/api/en/news')
 				.end((err, res) => {
 					expect(newsListResult.then).to.be.a('Function')
 					expect(newsListResult.catch).to.be.a('Function')
@@ -51,7 +51,7 @@ describe('News module', () => {
 
 		it('it should GET all the news', (done) => {
 			chai.request(server)
-			.get('/api/news')
+			.get('/api/en/news')
 			.end((err, res) => {
 
 				res.should.have.status(200);
