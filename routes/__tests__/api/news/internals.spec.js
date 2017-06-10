@@ -65,7 +65,9 @@ const saveAPiece = (model) => {
 describe('News module Internal Functions', () => {
 	
 	describe('news-list', () => {
-	
+		
+		beforeEach(cleanNews)
+		
 		describe('it should export a "getAllNews" function', () => {
 
 			it('getAllNews should be a function', () => {
@@ -186,14 +188,38 @@ describe('News module Internal Functions', () => {
 				expect(NewsInt.getTheDesiredAmountOfNews()).to.be.a("Function")
 			});
 
-			it('getTheDesiredAmountOfNews should return the "getLastNNews" function if a number of news is provided', () => {
-				let req = {query:{last: 6}};
-				expect(NewsInt.getTheDesiredAmountOfNews(req)().toString()).to.be.eql(NewsInt.getLastNNews(6).toString())
+			it('getTheDesiredAmountOfNews should return the last N news if a number of news is provided', () => {
+				let req = {query:{last: 2}};
+				saveAPiece({title: {en: "First"}})
+				.then(()=>saveAPiece({title: {en: "Second"}}))
+				.then(()=>saveAPiece({title: {en: "Third"}}))
+				.then(()=>{
+					NewsInt.getLastNNews(2)()
+					.then(lastTwo=>{
+						NewsInt.getTheDesiredAmountOfNews(req)()
+						.then(desiredNews => {
+							expect(lastTwo).to.be.eql(desiredNews);
+							done();
+						});
+					});
+				})
 			});
 
-			it('getTheDesiredAmountOfNews should return the "getAllNews" function if NO number is specified', () => {
-				let req = {query: {}};
-				expect(NewsInt.getTheDesiredAmountOfNews(req)().toString()).to.be.eql(NewsInt.getAllNews.toString())
+			it('getTheDesiredAmountOfNews should return the all the news if NO number is specified', () => {
+				let req = {query:{}};
+				saveAPiece({title: {en: "First"}})
+				.then(()=>saveAPiece({title: {en: "Second"}}))
+				.then(()=>saveAPiece({title: {en: "Third"}}))
+				.then(()=>{
+					NewsInt.getAllNews()
+					.then(all=>{
+						NewsInt.getTheDesiredAmountOfNews(req)()
+							.then(desiredNews => {
+								expect(all).to.be.eql(desiredNews);
+								done();
+							});
+					});
+				})
 			});
 
 		});

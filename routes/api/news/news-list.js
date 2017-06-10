@@ -74,8 +74,8 @@ const getLastNNews = N => ()=>
  */
 const getTheDesiredAmountOfNews = req => () =>
 	req.query.last ?
-	getLastNNews(req.query.last) :
-	getAllNews;
+	getLastNNews(req.query.last)() :
+	getAllNews();
 
 /**
  * getLanguageVersion:: String -> Array<PieceOfNews> -> Array<PieceOfNews>
@@ -84,15 +84,16 @@ const getTheDesiredAmountOfNews = req => () =>
  * @param lang: "en" | "bg"
  */
 
-const getLanguageVersion = lang => news =>
-	news.map(piece=>
-		Object.keys(piece).reduce((accumulator, key)=>{
+const getLanguageVersion = lang => news => {
+	return (news || []).map(piece =>
+		Object.keys(piece).reduce((accumulator, key) => {
 			let value = piece[key];
 			return Object.assign({}, accumulator, {
 				[key]: _.has(lang, value) ? value[lang] : value
 			})
 		}, {})
 	);
+};
 
 /**
  * 
@@ -131,9 +132,12 @@ exports.test = {
 };
 
 exports.list = ( req, res ) =>
-	_.compose(
-		sendAPIResponse(res),
-		getPreferredLanguageVersion(req),
-		getTheDesiredAmountOfNews(req)
-	)();
+	getTheDesiredAmountOfNews(req)()
+	.then(news => 
+		_.compose(
+			sendAPIResponse(res),
+			getPreferredLanguageVersion(req)
+		)(news)
+	);
+	
 
