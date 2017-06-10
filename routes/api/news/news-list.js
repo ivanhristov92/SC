@@ -51,7 +51,7 @@ const getAllNews = ()=>
 	});
 
 /**
- * getLastNNews: Int -> _ -> Array<PieceOfNews>
+ * getLastNNews: Int -> Function -> Array<PieceOfNews>
  */
 const getLastNNews = N => ()=>
 	new Promise((resolve, reject)=>{
@@ -67,7 +67,12 @@ const getLastNNews = N => ()=>
 			});
 	});
 
-const getTheDesiredAmountOfNews = req=>()=>
+/**
+ * getTheDesiredAmountOfNews:: Req -> Function -> Function -> Array<PieceOfNews>
+ *
+ * @param req - Express 'req' object
+ */
+const getTheDesiredAmountOfNews = req => () =>
 	req.query.last ?
 	getLastNNews(req.query.last) :
 	getAllNews;
@@ -89,10 +94,19 @@ const getLanguageVersion = lang => news =>
 		}, {})
 	);
 
-const getEnglishVersion = getLanguageVersion("en");
-
+/**
+ * 
+ * getEnglishVersion::   Array<PieceOfNews> -> Array<PieceOfNews>
+ * getBulgarianVersion:: Array<PieceOfNews> -> Array<PieceOfNews>
+ */
+const getEnglishVersion   = getLanguageVersion("en");
 const getBulgarianVersion = getLanguageVersion("bg");
 
+/**
+ * getPreferredLanguageVersion:: Req -> Function -> Array<PieceOfNews>
+ * 
+ * @param req - Express 'reqiest' object
+ */
 const getPreferredLanguageVersion = (req)=>
 	_.equals(req.params.language, "en") ?
 		getEnglishVersion	:
