@@ -188,24 +188,24 @@ describe('News module Internal Functions', () => {
 				expect(NewsInt.getTheDesiredAmountOfNews()).to.be.a("Function")
 			});
 
-			it('getTheDesiredAmountOfNews should return the last N news if a number of news is provided', () => {
+			it('getTheDesiredAmountOfNews should return the last N news if a number of news is provided', (done) => {
 				let req = {query:{last: 2}};
 				saveAPiece({title: {en: "First"}})
 				.then(()=>saveAPiece({title: {en: "Second"}}))
 				.then(()=>saveAPiece({title: {en: "Third"}}))
 				.then(()=>{
-					NewsInt.getLastNNews(2)()
+					 NewsInt.getLastNNews(2)()
 					.then(lastTwo=>{
 						NewsInt.getTheDesiredAmountOfNews(req)()
 						.then(desiredNews => {
-							expect(lastTwo).to.be.eql(desiredNews);
+							expect(lastTwo.length).to.be.eql(desiredNews.length);
 							done();
-						});
-					});
+						})
+					})
 				})
 			});
 
-			it('getTheDesiredAmountOfNews should return the all the news if NO number is specified', () => {
+			it('getTheDesiredAmountOfNews should return the all the news if NO number is specified', (done) => {
 				let req = {query:{}};
 				saveAPiece({title: {en: "First"}})
 				.then(()=>saveAPiece({title: {en: "Second"}}))
@@ -215,7 +215,7 @@ describe('News module Internal Functions', () => {
 					.then(all=>{
 						NewsInt.getTheDesiredAmountOfNews(req)()
 							.then(desiredNews => {
-								expect(all).to.be.eql(desiredNews);
+								expect(all.length).to.be.eql(desiredNews.length);
 								done();
 							});
 					});
@@ -227,14 +227,15 @@ describe('News module Internal Functions', () => {
 
 
 		describe('it should export a "getEnglishVersion" function', () => {
+			beforeEach(cleanNews)
 
 			it('getEnglishVersion should be a function', () => {
 				expect(NewsInt.getEnglishVersion).to.be.a("Function")
 			});
 
 			it('getEnglishVersion should return an array', () => {
-				let news = [{}, {}, {}];
-				let _news = NewsInt.getEnglishVersion(news)
+				let news = [{title: "aa"}, {title: "aa"}, {title: "aa"}];
+				let _news = NewsInt.getEnglishVersion(news);
 				expect(_news).to.be.a("Array");
 				expect(_news.length).to.be.eql(news.length);
 			});
@@ -354,6 +355,5 @@ describe('News module Internal Functions', () => {
 				expect(res.apiResponse.calledWith({news})).to.be.eql(true);
 			});
 		});
-
 	});
 });

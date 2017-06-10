@@ -76,7 +76,7 @@ describe('News module', () => {
 			newNews.save(function(err) {
 				// post has been saved	
 				chai.request(server)
-					.get('/api/news')
+					.get('/api/en/news')
 					.end((err, res) => {
 					expect(res.body.news.length).to.be.eql(1);
 				let pieceOfNews = res.body.news[0];
