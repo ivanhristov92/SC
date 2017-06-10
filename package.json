@@ -27,6 +27,6 @@
   "scripts": {
     "lint": "eslint .",
     "start": "node keystone.js",
-    "test": "mocha --require co-mocha  routes/**/**.spec.js"
+    "test": "mocha --require co-mocha  routes/__tests__/api/news/**/**.spec.js"
   }
 }

@@ -3,10 +3,8 @@
 
 const _ 		  = require("ramda");
 const async 	  = require('async');
-const keystone  = require('keystone');
-const News 	  = keystone.list('News');
-
-exports.model = News.model;
+const keystone    = require('keystone');
+const News 	      = keystone.list('News');
 
 /**
  * type PieceOfNews = {
@@ -38,7 +36,7 @@ exports.model = News.model;
  * List News
  */
 
-exports.getAllNews = ()=>
+const getAllNews = ()=>
 	new Promise((resolve, reject)=>{
 		/**
 		 * @param news: Array<PieceOfNews>
@@ -50,7 +48,7 @@ exports.getAllNews = ()=>
 	});
 
 
-exports.getLastNNews = N => ()=>
+const getLastNNews = N => ()=>
 	new Promise((resolve, reject)=>{
 		/**
 		 * @param news: Array<PieceOfNews>
@@ -64,25 +62,37 @@ exports.getLastNNews = N => ()=>
 			});
 	});
 
-exports.getTheDesiredAmountOfNews = req=>()=>
+const getTheDesiredAmountOfNews = req=>()=>
 	req.query.last ?
-		getLastNNews(req.query.last) :
-		getAllNews;
+	getLastNNews(req.query.last) :
+	getAllNews;
 
 
-exports.getEnglishVersion = news=>news; //TODO
-exports.getBulgarianVersion = news=>news; //TODO
-exports.getPreferredLanguageVersion = (req)=>
+const getEnglishVersion = news=>news; //TODO
+
+const getBulgarianVersion = news=>news; //TODO
+
+const getPreferredLanguageVersion = (req)=>
 	_.equals(req.params.language, "en") ?
 		getEnglishVersion	:
 		getPreferredLanguageVersion;
 
 
 
-exports.sendAPIResponse =  res=>news=>{
+const sendAPIResponse =  res=>news=>{
 	res.apiResponse({
 		news
 	})
+};
+
+exports.test = {
+	getAllNews,
+	getLastNNews,
+	getTheDesiredAmountOfNews,
+	getEnglishVersion,
+	getBulgarianVersion,
+	getPreferredLanguageVersion,
+	sendAPIResponse
 };
 
 exports.list = ( req, res ) =>

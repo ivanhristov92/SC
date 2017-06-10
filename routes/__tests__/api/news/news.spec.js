@@ -3,10 +3,10 @@
  */
 
 'use strict';
-var keystone = require("../../../keystone");
+var keystone = require("../../../../keystone");
 var server = keystone.app;
 
-const News = require('../../api/news/news-main');
+const News = require('../../../api/news');
 const chai = require("chai");
 const expect = chai.expect;
 const should = chai.should();

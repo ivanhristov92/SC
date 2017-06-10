@@ -36,14 +36,14 @@
 /**
  * List News
  */
-exports.list = require("./news-list").list;
+exports.list = require("./news/news-list").list;
 
 /**
  * Get News By Id
  */
-exports.getById = require("./news-by-id").getById;
+exports.getById = require("./news/news-by-id").getById;
 
 /**
  * Get News By Slug
  */
-exports.getBySlug = require("./news-by-slug").getBySlug;
+exports.getBySlug = require("./news/news-by-slug").getBySlug;
