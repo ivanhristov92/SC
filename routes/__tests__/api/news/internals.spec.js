@@ -12,6 +12,7 @@ const chai 	   = require("chai");
 const expect   = chai.expect;
 const should   = chai.should();
 const chaiHttp = require('chai-http');
+const sinon    = require('sinon');
 
 chai.use(chaiHttp);
 
@@ -204,8 +205,128 @@ describe('News module Internal Functions', () => {
 			it('getEnglishVersion should be a function', () => {
 				expect(NewsInt.getEnglishVersion).to.be.a("Function")
 			});
-			
 
+			it('getEnglishVersion should return an array', () => {
+				let news = [{}, {}, {}];
+				let _news = NewsInt.getEnglishVersion(news)
+				expect(_news).to.be.a("Array");
+				expect(_news.length).to.be.eql(news.length);
+			});
+
+			it('getEnglishVersion should return all items without any "en" or "bg" fields', () => {
+				let _news = [{title: {bg: "zaglavie", en: "title"}}];
+				let news = NewsInt.getEnglishVersion(_news);
+				news.map(piece=>{
+					Object.keys(piece).map(key=>{
+						let value = piece[key];
+						expect(key).not.to.be.eql("en");
+						expect(key).not.to.be.eql("bg");
+						expect(value).not.to.have.property("en");
+						expect(value).not.to.have.property("bg");
+					});
+				})
+			});
+
+			it('getEnglishVersion should return the correct field values', () => {
+				let _news = [{title: {bg: "zaglavie", en: "title"}, content: {en: "aa", bg: "bb"}}];
+				let news = NewsInt.getEnglishVersion(_news);
+				expect(news[0].title).to.be.eql("title");
+				expect(news[0].content).to.be.eql("aa");
+			});
+
+		});
+
+
+
+
+
+		describe('it should export a "getBulgarianVersion" function', () => {
+
+			it('getBulgarianVersion should be a function', () => {
+				expect(NewsInt.getBulgarianVersion).to.be.a("Function")
+			});
+
+			it('getBulgarianVersion should return an array', () => {
+				let news = [{}, {}, {}];
+				let _news = NewsInt.getBulgarianVersion(news)
+				expect(_news).to.be.a("Array");
+				expect(_news.length).to.be.eql(news.length);
+			});
+
+			it('getBulgarianVersion should return all items without any "en" or "bg" fields', () => {
+				let _news = [{title: {bg: "zaglavie", en: "title"}}];
+				let news = NewsInt.getEnglishVersion(_news);
+				news.map(piece=>{
+					Object.keys(piece).map(key=>{
+						let value = piece[key];
+						expect(key).not.to.be.eql("en");
+						expect(key).not.to.be.eql("bg");
+						expect(value).not.to.have.property("en");
+						expect(value).not.to.have.property("bg");
+					});
+				})
+			});
+
+			it('getBulgarianVersion should return the correct field values', () => {
+				let _news = [{title: {bg: "zaglavie", en: "title"}, content: {en: "aa", bg: "bb"}}];
+				let news = NewsInt.getBulgarianVersion(_news);
+				expect(news[0].title).to.be.eql("zaglavie");
+				expect(news[0].content).to.be.eql("bb");
+			});
+
+		});
+
+
+
+		describe('it should export a "getPreferredLanguageVersion" function', () => {
+
+			it('getPreferredLanguageVersion should be a function', () => {
+				expect(NewsInt.getPreferredLanguageVersion).to.be.a("Function")
+			});
+
+			it('getPreferredLanguageVersion should return a function', () => {
+				let req = {params: {}}
+				expect(NewsInt.getPreferredLanguageVersion(req)).to.be.a("Function")
+			});
+
+			it('getPreferredLanguageVersion should return the "getEnglishVersion" function if the language is specified as "en"', () => {
+				let req = {params:{language: "en"}};
+				expect(NewsInt.getPreferredLanguageVersion(req).toString()).to.be.eql(NewsInt.getEnglishVersion.toString())
+			});
+
+			it('getTheDesiredAmountOfNews should return the "getBulgarianVersion" function if the language is specified as "bg"', () => {
+				let req = {params:{language: "en"}};
+				expect(NewsInt.getPreferredLanguageVersion(req).toString()).to.be.eql(NewsInt.getBulgarianVersion.toString())
+			});
+
+		});
+
+
+
+
+		describe('it should export a "sendAPIResponse" function', () => {
+
+			it('sendAPIResponse should be a function', () => {
+				expect(NewsInt.sendAPIResponse).to.be.a("Function")
+			});
+
+			it('sendAPIResponse should return a function', () => {
+				expect(NewsInt.sendAPIResponse()).to.be.a("Function")
+			});
+
+			it('sendAPIResponse should call "res.apiResponse"', () => {
+				let res = {apiResponse: sinon.spy()};
+				let news = [{title: {en: "aa", bg: "bg"}}, {title: {en: "aa2", bg: "bg2"}}];
+				NewsInt.sendAPIResponse(res)(news);
+				expect(res.apiResponse.calledOnce).to.be.eql(true);
+			});
+
+			it('sendAPIResponse should call "res.apiResponse" with the right arguments', () => {
+				let res = {apiResponse: sinon.spy()};
+				let news = [{title: {en: "aa", bg: "bg"}}, {title: {en: "aa2", bg: "bg2"}}];
+				NewsInt.sendAPIResponse(res)(news);
+				expect(res.apiResponse.calledWith({news})).to.be.eql(true);
+			});
 		});
 
 	});

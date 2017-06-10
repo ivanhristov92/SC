@@ -67,15 +67,31 @@ const getTheDesiredAmountOfNews = req=>()=>
 	getLastNNews(req.query.last) :
 	getAllNews;
 
+/**
+ * 
+ * @param news: Array<PieceOfNews>
+ * @param lang: "en" | "bg"
+ */
 
-const getEnglishVersion = news=>news; //TODO
 
-const getBulgarianVersion = news=>news; //TODO
+const getLanguageVersion = lang => news =>
+	news.map(piece=>
+		Object.keys(piece).reduce((accumulator, key)=>{
+			let value = piece[key];
+			return Object.assign({}, accumulator, {
+				[key]: _.has(lang, value) ? value[lang] : value
+			})
+		}, {})
+	);
+
+const getEnglishVersion = getLanguageVersion("en");
+
+const getBulgarianVersion = getLanguageVersion("bg");
 
 const getPreferredLanguageVersion = (req)=>
 	_.equals(req.params.language, "en") ?
 		getEnglishVersion	:
-		getPreferredLanguageVersion;
+		getBulgarianVersion;
 
 
 
