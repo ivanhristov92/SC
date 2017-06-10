@@ -36,6 +36,9 @@ const News 	      = keystone.list('News');
  * List News
  */
 
+/**
+ * getAllNews:: _ -> Array<PieceOfNews>
+ */
 const getAllNews = ()=>
 	new Promise((resolve, reject)=>{
 		/**
@@ -47,7 +50,9 @@ const getAllNews = ()=>
 		});
 	});
 
-
+/**
+ * getLastNNews: Int -> _ -> Array<PieceOfNews>
+ */
 const getLastNNews = N => ()=>
 	new Promise((resolve, reject)=>{
 		/**
@@ -68,11 +73,11 @@ const getTheDesiredAmountOfNews = req=>()=>
 	getAllNews;
 
 /**
+ * getLanguageVersion:: String -> Array<PieceOfNews> -> Array<PieceOfNews>
  * 
  * @param news: Array<PieceOfNews>
  * @param lang: "en" | "bg"
  */
-
 
 const getLanguageVersion = lang => news =>
 	news.map(piece=>
