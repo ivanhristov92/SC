@@ -67,7 +67,10 @@ describe('News module', () => {
 
 		it('it should GET all the news after adding "new with title only"', (done) => {
 			let newNews = new News.model({
-				title: 'New News',
+				title: {
+					en: 'New News',
+					bg: "Novi novini"
+				},
 			});
 	
 			newNews.save(function(err) {
