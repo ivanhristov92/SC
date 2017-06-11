@@ -1,6 +1,14 @@
 var keystone = require('keystone');
 var Types = keystone.Field.Types;
 
+exports._newsFields = [
+	"_id",
+	"slug",
+	"title",
+	"content",
+	"featuredImage",
+	"createdAt"
+];
 /**
  * News Model
  * ==========

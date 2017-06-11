@@ -5,6 +5,9 @@ const _ 		  = require("ramda");
 const async 	  = require('async');
 const keystone    = require('keystone');
 const News 	      = keystone.list('News');
+const Maybe 	  = require("ramda-fantasy").Maybe;
+
+const _newsFields = require("../../../models/News")._newsFields;
 
 /**
  * type PieceOfNews = {
@@ -35,6 +38,7 @@ const News 	      = keystone.list('News');
 /**
  * List News
  */
+
 
 /**
  * getAllNews:: _ -> Array<PieceOfNews>
@@ -86,14 +90,15 @@ const getTheDesiredAmountOfNews = req => () =>
 
 const getLanguageVersion = lang => news => {
 	return (news || []).map(piece =>
-		Object.keys(piece).reduce((accumulator, key) => {
+		_newsFields.reduce((accumulator, key) => {
 			let value = piece[key];
 			return Object.assign({}, accumulator, {
-				[key]: _.has(lang, value) ? value[lang] : value
+				[key]: (_.equals(typeof value, "object") && _.has(lang, value)) ? value[lang] : value
 			})
 		}, {})
 	);
 };
+		
 
 /**
  * 
@@ -104,14 +109,15 @@ const getEnglishVersion   = getLanguageVersion("en");
 const getBulgarianVersion = getLanguageVersion("bg");
 
 /**
- * getPreferredLanguageVersion:: Req -> Function -> Array<PieceOfNews>
+ * getPreferredLanguageVersion:: Req -> Array<PieceOfNews> -> Array<PieceOfNews>
  * 
  * @param req - Express 'reqiest' object
+ * @param news - Array<PieceOfNews>
  */
-const getPreferredLanguageVersion = (req)=>
+const getPreferredLanguageVersion = (req)=>news=>
 	_.equals(req.params.language, "en") ?
-		getEnglishVersion	:
-		getBulgarianVersion;
+		getEnglishVersion(news)	:
+		getBulgarianVersion(news);
 
 
 
@@ -133,11 +139,10 @@ exports.test = {
 
 exports.list = ( req, res ) =>
 	getTheDesiredAmountOfNews(req)()
-	.then(news => 
+	.then(news =>
 		_.compose(
 			sendAPIResponse(res),
 			getPreferredLanguageVersion(req)
-		)(news)
-	);
+		)(news));
 	
 

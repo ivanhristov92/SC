@@ -13,6 +13,7 @@ const expect   = chai.expect;
 const should   = chai.should();
 const chaiHttp = require('chai-http');
 const sinon    = require('sinon');
+const _newsFields = require("../../../../models/News")._newsFields;
 
 chai.use(chaiHttp);
 
@@ -244,12 +245,15 @@ describe('News module Internal Functions', () => {
 				let _news = [{title: {bg: "zaglavie", en: "title"}}];
 				let news = NewsInt.getEnglishVersion(_news);
 				news.map(piece=>{
-					Object.keys(piece).map(key=>{
+					_newsFields.map(key=>{
+						
 						let value = piece[key];
 						expect(key).not.to.be.eql("en");
 						expect(key).not.to.be.eql("bg");
-						expect(value).not.to.have.property("en");
-						expect(value).not.to.have.property("bg");
+						if(value){
+							expect(value).not.to.have.property("en");
+							expect(value).not.to.have.property("bg");
+						}
 					});
 				})
 			});
@@ -288,8 +292,10 @@ describe('News module Internal Functions', () => {
 						let value = piece[key];
 						expect(key).not.to.be.eql("en");
 						expect(key).not.to.be.eql("bg");
-						expect(value).not.to.have.property("en");
-						expect(value).not.to.have.property("bg");
+						if(value){
+							expect(value).not.to.have.property("en");
+							expect(value).not.to.have.property("bg");
+						}
 					});
 				})
 			});
@@ -316,14 +322,14 @@ describe('News module Internal Functions', () => {
 				expect(NewsInt.getPreferredLanguageVersion(req)).to.be.a("Function")
 			});
 
-			it('getPreferredLanguageVersion should return the "getEnglishVersion" function if the language is specified as "en"', () => {
+			it('getPreferredLanguageVersion should NOT return the "getEnglishVersion" function if the language is specified as "en"', () => {
 				let req = {params:{language: "en"}};
-				expect(NewsInt.getPreferredLanguageVersion(req).toString()).to.be.eql(NewsInt.getEnglishVersion.toString())
+				expect(NewsInt.getPreferredLanguageVersion(req).toString()).not.to.be.eql(NewsInt.getEnglishVersion.toString())
 			});
 
-			it('getTheDesiredAmountOfNews should return the "getBulgarianVersion" function if the language is specified as "bg"', () => {
+			it('getTheDesiredAmountOfNews should NOT return the "getBulgarianVersion" function if the language is specified as "bg"', () => {
 				let req = {params:{language: "en"}};
-				expect(NewsInt.getPreferredLanguageVersion(req).toString()).to.be.eql(NewsInt.getBulgarianVersion.toString())
+				expect(NewsInt.getPreferredLanguageVersion(req).toString()).not.to.be.eql(NewsInt.getBulgarianVersion.toString())
 			});
 
 		});
