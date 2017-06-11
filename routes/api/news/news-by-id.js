@@ -9,18 +9,30 @@ const async 	  = require('async');
 const keystone    = require('keystone');
 const News 	      = keystone.list('News');
 
-//TODO add language support
-exports.getById = function( req, res ) {
-	return new Promise((resolve, reject)=>{
-		News.model.findById(req.params.id)
+const getPreferredLanguageVersion = require("./news-list").getPreferredLanguageVersion;
+const sendAPIResponse = require("./news-list").sendAPIResponse;
+
+
+const extractId = req => req.params.id;
+
+const _getById = id  => 
+	new Promise((resolve, reject)=> {
+		News.model.findById(id)
 		/**
 		 *  @param news: PieceOfNews
 		 */
-			.exec( function( err, news ) {
-				if (err) return reject(res.apiError('database error', err));
-				resolve(res.apiResponse({
-					news: news
-				}));
-			});
+		.exec((err, news) => {
+			if (err) return reject(err);
+			resolve(news);
+		});
 	});
-};
+		
+
+exports.getById = (req, res) =>
+	_.compose(_getById, extractId)(req)
+	.then(news =>{
+		_.compose(
+			sendAPIResponse(res),
+			getPreferredLanguageVersion(req)
+		)(news)
+	});

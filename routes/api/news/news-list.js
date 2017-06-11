@@ -128,6 +128,7 @@ const sendAPIResponse =  res=>news=>{
 	})
 };
 
+
 exports.test = {
 	getAllNews,
 	getLastNNews,
@@ -137,6 +138,9 @@ exports.test = {
 	getPreferredLanguageVersion,
 	sendAPIResponse
 };
+
+exports.getPreferredLanguageVersion = getPreferredLanguageVersion;
+exports.sendAPIResponse = sendAPIResponse;
 
 exports.list = ( req, res ) =>
 	getTheDesiredAmountOfNews(req)()
