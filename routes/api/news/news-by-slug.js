@@ -3,8 +3,8 @@
 
 const _ 		  = require("ramda");
 const async 	  = require('async');
-const keystone   = require('keystone');
-const News 	  = keystone.list('News');
+const keystone    = require('keystone');
+const News 	      = keystone.list('News');
 
 //TODO add language support
 exports.getBySlug = function( req, res ) {
