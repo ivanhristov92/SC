@@ -34,5 +34,5 @@ exports.getById = (req, res) =>
 		_.compose(
 			sendAPIResponse(res),
 			getPreferredLanguageVersion(req)
-		)(news)
+		)([news])
 	});
