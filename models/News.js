@@ -27,14 +27,8 @@ News.add({
 		bg: { type: String, required: false, label: 'Заглавие', dependsOn: { language: 'bg' } }
 	},
 	content: {
-		en: {
-			brief: {type: Types.Html, wysiwyg: true, height: 150, label: 'content brief', dependsOn: {language: 'en'}},
-			extended: { type: Types.Html, wysiwyg: true, height: 400, label: 'content extended', dependsOn: {language: 'en'}}
-		}, 
-		bg: {
-			brief: {type: Types.Html, wysiwyg: true, height: 150, label: 'Описание', dependsOn: {language: 'bg'}},
-			extended: {type: Types.Html, wysiwyg: true, height: 400, label: 'Съдържание', dependsOn: {language: 'bg'}}
-		}
+		en: { type: Types.Html, wysiwyg: true, height: 400, label: 'content extended', dependsOn: {language: 'en'}},
+		bg: {type: Types.Html, wysiwyg: true, height: 400, label: 'Съдържание', dependsOn: {language: 'bg'}}
 	},
 
 	featuredImage: { type: Types.CloudinaryImage, select: true, selectPrefix: 'sc' },

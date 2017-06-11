@@ -82,7 +82,6 @@ describe('News module', () => {
 					expect(res.body.news.length).to.be.eql(1);
 				let pieceOfNews = res.body.news[0];
 					pieceOfNews.should.have.property("title");
-					Object.keys(pieceOfNews.content).length.should.be.eql(0);
 					done();
 				});
 		
@@ -93,10 +92,7 @@ describe('News module', () => {
 			let newNews = new News.model({
 				title: {en:'New News'},
 				content: {
-					en:{
-						brief: "aaa",
-						extended: "ooooo"
-					}
+					en: "aaa",
 				}
 			});
 
@@ -109,9 +105,7 @@ describe('News module', () => {
 					let pieceOfNews = res.body.news[0];
 					pieceOfNews.should.have.property("title");
 					pieceOfNews.should.have.property("content");
-					pieceOfNews.content.should.be.an("object");
-					pieceOfNews.content.should.have.property("brief");
-					pieceOfNews.content.should.have.property("extended");
+					pieceOfNews.content.should.be.eql("aaa");
 					done();
 				});
 
