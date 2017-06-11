@@ -112,62 +112,56 @@ describe('News module', () => {
 			});
 		});
 
-		// it("should respond to query params and return the 3 latest news", (done)=>{
-        //
-		// 	Promise.all([
-		// 		saveAPiece({title: "first"}),
-		// 		saveAPiece({title: "second"}),
-		// 		saveAPiece({title: "third"})
-		// 	])
-		// 	.then(()=> {
-		// 		return saveAPiece({title: "fourth"})
-		// 	})
-		// 	.then(()=> {
-		// 		return saveAPiece({title: "fifth"})
-		// 	})
-		// 	.then(()=> {
-		// 		return saveAPiece({title: "sixth"})
-		// 	})
-		// 	.then(resp=>{
-		// 		chai.request(server)
-		// 		.get('/api/news?last=3')
-		// 		.end((err,res)=>{
-		// 			expect(res.body.news.length).to.be.eql(3);
-		// 			expect(res.body.news[0].title).to.be.eql("sixth");
-		// 			expect(res.body.news[1].title).to.be.eql("fifth");
-		// 			expect(res.body.news[2].title).to.be.eql("fourth");
-		// 			done();
-		// 		})
-        //
-		// 	});
-        //
-		// });
+		it("should respond to query params and return the 3 latest news", (done)=>{
 
-		// it("should respond to query params and return the 4 latest news", (done)=>{
-        //
-		// 	Promise.all([
-		// 		saveAPiece({title: {en:"first", bg: ""}}),
-		// 		saveAPiece({title: {en:"second", bg: ""}})
-		// 	])
-		// 	.then(()=> saveAPiece({title: {en:"third", bg: ""}}))
-		// 	.then(()=> saveAPiece({title: {en:"fourth", bg: ""}}))
-		// 	.then(()=> saveAPiece({title: {en:"fifth", bg: ""}}))
-		// 	.then(()=> saveAPiece({title: {en:"sixth", bg: ""}}))
-		// 	.then(resp=>{
-		// 			chai.request(server)
-		// 				.get('/api/news?last=4')
-		// 				.end((err,res)=>{
-		// 					expect(res.body.news.length).to.be.eql(4);
-		// 					expect(res.body.news[0].title).to.be.eql("sixth");
-		// 					expect(res.body.news[1].title).to.be.eql("fifth");
-		// 					expect(res.body.news[2].title).to.be.eql("fourth");
-		// 					expect(res.body.news[3].title).to.be.eql("third");
-		// 					done();
-		// 				})
-        //
-		// 		});
-        //
-		// })
+			Promise.all([
+				saveAPiece({title: {en: "first"}}),
+				saveAPiece({title: {en: "second"}}),
+				saveAPiece({title: {en: "third"}}),
+			])
+			.then(()=> saveAPiece({title: {en: "fourth"}}))
+			.then(()=> saveAPiece({title: {en: "fifth"}}))
+			.then(()=> saveAPiece({title: {en: "sixth"}}))
+			.then(resp=>{
+				chai.request(server)
+				.get('/api/en/news?last=3')
+				.end((err,res)=>{
+					expect(res.body.news.length).to.be.eql(3);
+					expect(res.body.news[0].title).to.be.eql("sixth");
+					expect(res.body.news[1].title).to.be.eql("fifth");
+					expect(res.body.news[2].title).to.be.eql("fourth");
+					done();
+				})
+
+			});
+
+		});
+
+		it("should respond to query params and return the 4 latest news", (done)=>{
+
+			Promise.all([
+				saveAPiece({title: {en:"first", bg: ""}}),
+				saveAPiece({title: {en:"second", bg: ""}})
+			])
+			.then(()=> saveAPiece({title: {en:"third", bg: ""}}))
+			.then(()=> saveAPiece({title: {en:"fourth", bg: ""}}))
+			.then(()=> saveAPiece({title: {en:"fifth", bg: ""}}))
+			.then(()=> saveAPiece({title: {en:"sixth", bg: ""}}))
+			.then(resp=>{
+					chai.request(server)
+						.get('/api/en/news?last=4')
+						.end((err,res)=>{
+							expect(res.body.news.length).to.be.eql(4);
+							expect(res.body.news[0].title).to.be.eql("sixth");
+							expect(res.body.news[1].title).to.be.eql("fifth");
+							expect(res.body.news[2].title).to.be.eql("fourth");
+							expect(res.body.news[3].title).to.be.eql("third");
+							done();
+						})
+
+				});
+
+		})
 		
 	});
 	

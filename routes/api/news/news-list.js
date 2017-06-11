@@ -6,6 +6,7 @@ const async 	  = require('async');
 const keystone    = require('keystone');
 const News 	      = keystone.list('News');
 const Maybe 	  = require("ramda-fantasy").Maybe;
+const Future 	  = require("ramda-fantasy").Future;
 
 const _newsFields = require("../../../models/News")._newsFields;
 
@@ -144,5 +145,3 @@ exports.list = ( req, res ) =>
 			sendAPIResponse(res),
 			getPreferredLanguageVersion(req)
 		)(news));
-	
-
