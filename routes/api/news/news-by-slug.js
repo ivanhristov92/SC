@@ -6,6 +6,7 @@ const async 	  = require('async');
 const keystone   = require('keystone');
 const News 	  = keystone.list('News');
 
+//TODO add language support
 exports.getBySlug = function( req, res ) {
 	return new Promise((resolve, reject)=>{
 		News.model.find({slug: req.params.slug})

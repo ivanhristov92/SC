@@ -165,45 +165,45 @@ describe('News module', () => {
 		
 	});
 	
-	// describe("it should export a 'getById' function", ()=>{
-	//	
-	// 	beforeEach(cleanNews);
-	//	
-	// 	it('should export a "getById" function', () => {
-	// 		expect(News.getById).to.be.a("Function")
-	// 	});
-    //
-    //
-	// 	it('it should get a single piece of news', (done) => {
-    //
-	// 		let newNews = new News.model({
-	// 			title: 'New News',
-	// 		});
-	//		
-	// 		new Promise((resolve, reject)=>{
-	// 			newNews.save(function(err, post) {
-	// 				if(err) reject(err);
-	// 				const id = post._id;
-	// 				resolve(id);				
-	// 			});
-	// 		})
-	// 		.then(id=>{
-	// 			chai.request(server)
-	// 			.get(`/api/news/id/${id}`)
-	// 			.end((err, res) => {
-	// 				res.should.have.status(200);
-	// 				res.body.should.be.an("object");
-	// 				res.body.should.have.property("news");
-	// 				res.body.news.should.be.an("object");
-	// 				res.body.news.should.have.property("title");
-	// 				res.body.news.should.have.property("_id");
-	// 				res.body.news._id.should.be.eql(id.toString());
-	// 				done();
-	// 			});	
-	// 		})
-	//
-	// 	});
-	// })
+	describe("it should export a 'getById' function", ()=>{
+
+		beforeEach(cleanNews);
+
+		it('should export a "getById" function', () => {
+			expect(News.getById).to.be.a("Function")
+		});
+
+
+		it('it should get a single piece of news', (done) => {
+
+			let newNews = new News.model({
+				title: {en:'New News'},
+			});
+
+			new Promise((resolve, reject)=>{
+				newNews.save(function(err, post) {
+					if(err) reject(err);
+					const id = post._id;
+					resolve(id);				
+				});
+			})
+			.then(id=>{
+				chai.request(server)
+				.get(`/api/en/news/id/${id}`)
+				.end((err, res) => {
+					res.should.have.status(200);
+					res.body.should.be.an("object");
+					res.body.should.have.property("news");
+					res.body.news.should.be.an("object");
+					res.body.news.should.have.property("title");
+					res.body.news.should.have.property("_id");
+					res.body.news._id.should.be.eql(id.toString());
+					done();
+				});	
+			})
+
+		});
+	})
     //
     //
     //
