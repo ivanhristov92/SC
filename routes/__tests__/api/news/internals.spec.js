@@ -14,10 +14,8 @@ const should   = chai.should();
 const chaiHttp = require('chai-http');
 const sinon    = require('sinon');
 const _newsFields = require("../../../../models/News")._newsFields;
-
+const JSC 	   = require("jscheck") 
 chai.use(chaiHttp);
-
-
 
 
 /**
@@ -173,6 +171,36 @@ describe('News module Internal Functions', () => {
 					throw err;
 				})
 			});
+			
+			it("JSC", ()=>{
+				console.log("		/////////////////////")
+				function le(a, b) {
+					return a <= b;
+				}
+
+				JSC.on_fail(function(object){
+					console.log("			failed at ..", object.args)
+				});
+				JSC.test(
+					"Less than",
+					function (verdict, a, b) {
+						return verdict(le(a, b));
+					},
+					[
+						JSC.integer(10),
+						JSC.integer(20)
+					],
+					function (a, b) {
+						if (a < b) {
+							return 'lt';
+						} else if (a === b) {
+							return 'eq';
+						} else {
+							return 'gt';
+						}
+					}
+				);
+			})
 
 		});
 
