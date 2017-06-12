@@ -143,9 +143,8 @@ exports.getPreferredLanguageVersion = getPreferredLanguageVersion;
 exports.sendAPIResponse = sendAPIResponse;
 
 exports.list = ( req, res ) =>
-	getTheDesiredAmountOfNews(req)()
-	.then(news =>
-		_.compose(
-			sendAPIResponse(res),
-			getPreferredLanguageVersion(req)
-		)(news));
+	_.composeP(
+		sendAPIResponse(res),
+		getPreferredLanguageVersion(req),
+		getTheDesiredAmountOfNews(req)
+	)();

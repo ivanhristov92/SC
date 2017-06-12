@@ -36,3 +36,11 @@ exports.getById = (req, res) =>
 			getPreferredLanguageVersion(req)
 		)([news])
 	});
+
+// exports.getById = (req, res) =>
+// 	_.composeP(
+// 		sendAPIResponse(res),
+// 		getPreferredLanguageVersion(req),
+// 		_getById, 
+// 		extractId)(req);
+		
