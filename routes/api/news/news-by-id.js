@@ -13,7 +13,8 @@ const getPreferredLanguageVersion = require("./news-list").getPreferredLanguageV
 const sendAPIResponse = require("./news-list").sendAPIResponse;
 
 
-const extractId = req => ()=> Promise.resolve(req.params.id);
+const extractId = req => 
+	()=> Promise.resolve(req.params.id);
 
 const _getById = id  => 
 	new Promise((resolve, reject)=> {

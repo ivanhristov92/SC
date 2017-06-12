@@ -277,38 +277,7 @@ describe('News module', () => {
 
 		});
 
-		// it('it should contain an image link', (done) => {
-		//
-		// 		let newNews = new News.model({
-		// 			title: 'New News',
-		// 			// featuredImage: "http://res.cloudinary.com/dsgc8mdss/image/upload/v1478026701/dbc0j46lgrewxerwio8o.jpg"
-		// 		});
-		//	
-		// 		new Promise((resolve, reject)=>{
-		// 			newNews.save(function(err, post) {
-		// 				if(err) reject(err);
-		// 				const slug = post.slug;
-		// 				resolve(slug);
-		// 			});
-		// 		})
-		// 		.then(slug=>{
-		// 			chai.request(server)
-		// 			.get(`/api/news/${slug}`)
-		// 			.end((err, res) => {
-		// 			res.should.have.status(200);
-		// 			res.body.news.length.should.be.eql(1);
-		//			
-		// 			let pieceOfNews = res.body.news[0];
-		// 			pieceOfNews.should.have.property("featuredImage");
-		// 			pieceOfNews.featuredImage.should.be.eql("http://res.cloudinary.com/dsgc8mdss/image/upload/v1478026701/dbc0j46lgrewxerwio8o.jpg");
-		//			
-		// 			done();
-		// 		});
-		// 	})
-		// });
-		//
-
 	})
-});
+})
 
 // TODO IMAGES
