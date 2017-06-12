@@ -177,7 +177,7 @@ describe('News module', () => {
 		it('it should get a single piece of news', (done) => {
 
 			let newNews = new News.model({
-				title: {en:'New News'},
+				title: {en:'New News', bg: "Novi Novini"},
 			});
 
 			new Promise((resolve, reject)=>{
@@ -194,93 +194,121 @@ describe('News module', () => {
 					res.should.have.status(200);
 					res.body.should.be.an("object");
 					res.body.should.have.property("news");
-					res.body.news.should.be.an("object");
-					res.body.news.should.have.property("title");
-					res.body.news.should.have.property("_id");
-					res.body.news._id.should.be.eql(id.toString());
+					res.body.news.should.be.an("array");
+					res.body.news.length.should.be.eql(1);
+					res.body.news[0].should.have.property("title");
+					res.body.news[0].title.should.be.eql("New News");
+					res.body.news[0].should.have.property("_id");
+					res.body.news[0]._id.should.be.eql(id.toString());
 					done();
 				});	
 			})
+		});
 
+		it('it should get a single piece of news', (done) => {
+
+			let newNews = new News.model({
+				title: {en:'New News', bg: "Zaglavie"},
+			});
+
+			new Promise((resolve, reject)=>{
+				newNews.save(function(err, post) {
+					if(err) reject(err);
+					const id = post._id;
+					resolve(id);
+				});
+			})
+				.then(id=>{
+					chai.request(server)
+						.get(`/api/bg/news/id/${id}`)
+						.end((err, res) => {
+							res.should.have.status(200);
+							res.body.news.length.should.be.eql(1);
+							res.body.news[0].title.should.be.eql("Zaglavie");
+							res.body.news[0].should.have.property("_id");
+							res.body.news[0]._id.should.be.eql(id.toString());
+							done();
+						});
+				})
 		});
 	});
-    //
-    //
-    //
-    //
-	// describe("it should export a 'getBySlug' function", ()=>{
-	//
-	// 	beforeEach(cleanNews);
-	//
-	// 	it('should export a "getBySlug" function', () => {
-	// 		expect(News.getBySlug).to.be.a("Function")
-	// 	});
-	//	
-	// 	it('it should get a single piece of news', (done) => {
-    //
-	// 		let newNews = new News.model({
-	// 			title: 'New News',
-	// 		});
-    //
-	// 		new Promise((resolve, reject)=>{
-	// 			newNews.save(function(err, post) {
-	// 			if(err) reject(err);
-	// 			const slug = post.slug;
-	// 			resolve(slug);
-	// 		});
-	// 		})
-	// 		.then(slug=>{
-	// 			chai.request(server)
-	// 			.get(`/api/news/${slug}`)
-	// 			.end((err, res) => {
-	// 				res.should.have.status(200);
-	// 				res.body.should.be.an("object");
-	// 				res.body.should.have.property("news");
-	// 				res.body.news.should.be.an("array");
-	// 				res.body.news.length.should.be.eql(1);
-	//				
-	// 				let pieceOfNews = res.body.news[0];
-	// 				pieceOfNews.should.have.property("title");
-	// 				pieceOfNews.should.have.property("slug");
-	// 				pieceOfNews.slug.should.be.eql("new-news");
-	// 				done();
-	// 			});
-	// 		})
-    //
-	// 	});
-    //
-	// 	// it('it should contain an image link', (done) => {
-	// 	//
-	// 	// 		let newNews = new News.model({
-	// 	// 			title: 'New News',
-	// 	// 			// featuredImage: "http://res.cloudinary.com/dsgc8mdss/image/upload/v1478026701/dbc0j46lgrewxerwio8o.jpg"
-	// 	// 		});
-	// 	//	
-	// 	// 		new Promise((resolve, reject)=>{
-	// 	// 			newNews.save(function(err, post) {
-	// 	// 				if(err) reject(err);
-	// 	// 				const slug = post.slug;
-	// 	// 				resolve(slug);
-	// 	// 			});
-	// 	// 		})
-	// 	// 		.then(slug=>{
-	// 	// 			chai.request(server)
-	// 	// 			.get(`/api/news/${slug}`)
-	// 	// 			.end((err, res) => {
-	// 	// 			res.should.have.status(200);
-	// 	// 			res.body.news.length.should.be.eql(1);
-	// 	//			
-	// 	// 			let pieceOfNews = res.body.news[0];
-	// 	// 			pieceOfNews.should.have.property("featuredImage");
-	// 	// 			pieceOfNews.featuredImage.should.be.eql("http://res.cloudinary.com/dsgc8mdss/image/upload/v1478026701/dbc0j46lgrewxerwio8o.jpg");
-	// 	//			
-	// 	// 			done();
-	// 	// 		});
-	// 	// 	})
-	// 	// });
-	// 	//
-	//	
-	// })
+    
+	
+	
+	
+	describe("it should export a 'getBySlug' function", ()=>{
+
+		beforeEach(cleanNews);
+
+		it('should export a "getBySlug" function', () => {
+			expect(News.getBySlug).to.be.a("Function")
+		});
+
+		it('it should get a single piece of news', (done) => {
+
+			let newNews = new News.model({
+				title: {en:'New News'},
+			});
+
+			new Promise((resolve, reject)=>{
+				newNews.save(function(err, post) {
+				if(err) reject(err);
+				const slug = post.slug;
+				resolve(slug);
+			});
+			})
+			.then(slug=>{
+				chai.request(server)
+				.get(`/api/en/news/${slug}`)
+				.end((err, res) => {
+					res.should.have.status(200);
+					res.body.should.be.an("object");
+					res.body.should.have.property("news");
+					res.body.news.should.be.an("array");
+					res.body.news.length.should.be.eql(1);
+
+					let pieceOfNews = res.body.news[0];
+					pieceOfNews.should.have.property("title");
+					pieceOfNews.should.have.property("slug");
+					pieceOfNews.slug.should.be.eql("new-news");
+					done();
+				});
+			})
+
+		});
+
+		// it('it should contain an image link', (done) => {
+		//
+		// 		let newNews = new News.model({
+		// 			title: 'New News',
+		// 			// featuredImage: "http://res.cloudinary.com/dsgc8mdss/image/upload/v1478026701/dbc0j46lgrewxerwio8o.jpg"
+		// 		});
+		//	
+		// 		new Promise((resolve, reject)=>{
+		// 			newNews.save(function(err, post) {
+		// 				if(err) reject(err);
+		// 				const slug = post.slug;
+		// 				resolve(slug);
+		// 			});
+		// 		})
+		// 		.then(slug=>{
+		// 			chai.request(server)
+		// 			.get(`/api/news/${slug}`)
+		// 			.end((err, res) => {
+		// 			res.should.have.status(200);
+		// 			res.body.news.length.should.be.eql(1);
+		//			
+		// 			let pieceOfNews = res.body.news[0];
+		// 			pieceOfNews.should.have.property("featuredImage");
+		// 			pieceOfNews.featuredImage.should.be.eql("http://res.cloudinary.com/dsgc8mdss/image/upload/v1478026701/dbc0j46lgrewxerwio8o.jpg");
+		//			
+		// 			done();
+		// 		});
+		// 	})
+		// });
+		//
+
+	})
 });
 
 // TODO IMAGES
