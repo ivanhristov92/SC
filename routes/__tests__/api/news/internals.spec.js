@@ -468,6 +468,123 @@ describe('News module Internal Functions', () => {
 	describe("'news-by-query'", ()=>{
 		beforeEach(cleanNews)
 		
+		describe("it should export a _getByQuery internal function", ()=>{
+			
+			it("_getByQuery should be a function", ()=>{
+				expect(NewsIntQ._getByQuery).to.be.a("function")
+			})
+			
+			it("_getByQuery should get ('4th') the closest matching ('4th July')", (done)=>{
+				saveAPiece({title: {en: "First"}})
+				.then(()=>saveAPiece({title: {en: "Second Hand"}}))
+				.then(()=>saveAPiece({title: {en: "Third Party"}}))
+				.then(()=>saveAPiece({title: {en: "4th July"}}))
+				.then(()=>saveAPiece({title: {en: "5th Amendment"}}))
+				.then(()=>saveAPiece({title: {en: "6th Sense"}}))
+					.then(news=>{
+						NewsIntQ._getByQuery("4th")
+							.then(news=>{
+								news.length.should.be.eql(1);
+								news[0].title.en.should.be.eql("4th July");
+								done();
+							});
+					})
+					.catch(err=>{
+						throw err;
+					})
+
+			});
+
+			it("_getByQuery should get ('Hand') the closest matching ('Second Hand')", (done)=>{
+				saveAPiece({title: {en: "First"}})
+				.then(()=>saveAPiece({title: {en: "Second Hand"}}))
+				.then(()=>saveAPiece({title: {en: "Third Party"}}))
+				.then(()=>saveAPiece({title: {en: "4th July"}}))
+				.then(()=>saveAPiece({title: {en: "5th Amendment"}}))
+				.then(()=>saveAPiece({title: {en: "6th Sense"}}))
+				.then(()=>saveAPiece({title: {en: "7th Sense"}}))
+				.then(news=>{
+					NewsIntQ._getByQuery("Hand")
+						.then(news=>{
+							news.length.should.be.eql(1);
+							news[0].title.en.should.be.eql("Second Hand");
+							done();
+						});
+				})
+				.catch(err=>{
+					throw err;
+				})
+			})
+
+
+			it("_getByQuery should get ('sense') the closest matching ('7th Sense', '6th Sense' )", (done)=>{
+				saveAPiece({title: {en: "First"}})
+					.then(()=>saveAPiece({title: {en: "Second Hand"}}))
+					.then(()=>saveAPiece({title: {en: "Third Party"}}))
+					.then(()=>saveAPiece({title: {en: "4th July"}}))
+					.then(()=>saveAPiece({title: {en: "5th Amendment"}}))
+					.then(()=>saveAPiece({title: {en: "6th Sense"}}))
+					.then(()=>saveAPiece({title: {en: "7th Sense"}}))
+					.then(news=>{
+						NewsIntQ._getByQuery("sense")
+							.then(news=>{
+								news.length.should.be.eql(2);
+								news[0].title.en.should.be.eql("7th Sense");
+								news[1].title.en.should.be.eql("6th Sense");
+								done();
+							});
+					})
+					.catch(err=>{
+						throw err;
+					})
+			})
+
+
+			it("_getByQuery should get ('PARTY') the closest matching ('Third Party' )", (done)=>{
+				saveAPiece({title: {en: "First"}})
+					.then(()=>saveAPiece({title: {en: "Second Hand"}}))
+					.then(()=>saveAPiece({title: {en: "Third Party"}}))
+					.then(()=>saveAPiece({title: {en: "4th July"}}))
+					.then(()=>saveAPiece({title: {en: "5th Amendment"}}))
+					.then(()=>saveAPiece({title: {en: "6th Sense"}}))
+					.then(()=>saveAPiece({title: {en: "7th Sense"}}))
+					.then(news=>{
+						NewsIntQ._getByQuery("PARTY")
+							.then(news=>{
+								news.length.should.be.eql(1);
+								news[0].title.en.should.be.eql("Third Party");
+								done();
+							});
+					})
+					.catch(err=>{
+						throw err;
+					})
+			})
+
+			it("_getByQuery should get ('PARTYies') the closest matching ('Third Party' )", (done)=>{
+				saveAPiece({title: {en: "First"}})
+					.then(()=>saveAPiece({title: {en: "Second Hand"}}))
+					.then(()=>saveAPiece({title: {en: "Third Party"}}))
+					.then(()=>saveAPiece({title: {en: "4th July"}}))
+					.then(()=>saveAPiece({title: {en: "5th Amendment"}}))
+					.then(()=>saveAPiece({title: {en: "6th Sense"}}))
+					.then(()=>saveAPiece({title: {en: "7th Sense"}}))
+					.then(news=>{
+						NewsIntQ._getByQuery("PARTY")
+							.then(news=>{
+								news.length.should.be.eql(1);
+								news[0].title.en.should.be.eql("Third Party");
+								done();
+							});
+					})
+					.catch(err=>{
+						throw err;
+					})
+			})
+			
+			
+		});
+		
 		describe("it should export a getByQuery function", ()=>{
 			
 			const getByQuery = require("../../../api/news").getByQuery;
