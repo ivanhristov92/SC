@@ -172,6 +172,106 @@ describe('News module Internal Functions', () => {
 				})
 			});
 			
+			it("getLastNNews should return the last N(3) number of news with a negative number query", (done)=>{
+				saveAPiece({title: {en: "First"}})
+					.then(()=>saveAPiece({title: {en: "Second"}}))
+					.then(()=>saveAPiece({title: {en: "Third"}}))
+					.then(()=>saveAPiece({title: {en: "4th"}}))
+					.then(()=>saveAPiece({title: {en: "5th"}}))
+					.then(()=>saveAPiece({title: {en: "6th"}}))
+					.then(news=>{
+						return NewsInt.getLastNNews(-3)()
+							.then(news=>{
+								expect(news.length).to.be.eql(3);
+								done();
+							});
+					})
+					.catch(err=>{
+						throw err;
+					})
+			});
+
+			it("getLastNNews should return all news with a stringy query for N", (done)=>{
+				saveAPiece({title: {en: "First"}})
+					.then(()=>saveAPiece({title: {en: "Second"}}))
+					.then(()=>saveAPiece({title: {en: "Third"}}))
+					.then(()=>saveAPiece({title: {en: "4th"}}))
+					.then(()=>saveAPiece({title: {en: "5th"}}))
+					.then(()=>saveAPiece({title: {en: "6th"}}))
+					.then(news=>{
+						return NewsInt.getLastNNews("sss")()
+							.then(news=>{
+								expect(news.length).to.be.eql(6);
+								done();
+							})
+							.catch(err=>{throw err})
+					})
+					.catch(err=>{
+						throw err;
+					})
+			});
+
+			it("getLastNNews should return all news with a stringy number query for N", (done)=>{
+				saveAPiece({title: {en: "First"}})
+					.then(()=>saveAPiece({title: {en: "Second"}}))
+					.then(()=>saveAPiece({title: {en: "Third"}}))
+					.then(()=>saveAPiece({title: {en: "4th"}}))
+					.then(()=>saveAPiece({title: {en: "5th"}}))
+					.then(()=>saveAPiece({title: {en: "6th"}}))
+					.then(news=>{
+						return NewsInt.getLastNNews("4")()
+							.then(news=>{
+								expect(news.length).to.be.eql(4);
+								done();
+							})
+							.catch(err=>{throw err})
+					})
+					.catch(err=>{
+						throw err;
+					})
+			});
+
+
+			
+			
+			// it("JSC", ()=>{
+			//	
+			// 	let fails = false;
+			// 	console.log("       ----------------------------")
+			// 	function le(a, b) {
+			// 		return a <= b;
+			// 	}
+            //
+			// 	JSC.on_fail(function(object){
+			// 		fails = true;
+			// 	});
+			//	
+			// 	JSC.on_report((a)=>{
+			// 		console.log("report", a)
+			// 	})
+			// 	JSC.test(
+			// 		"Less than",
+			// 		function (verdict, a, b) {
+			// 			return verdict(le(a, b));
+			// 		},
+			// 		[
+			// 			JSC.integer(10),
+			// 			JSC.integer(20)
+			// 		],
+			// 		function (a, b) {
+			// 			if (a < b) {
+			// 				return 'lt';
+			// 			} else if (a === b) {
+			// 				return 'eq';
+			// 			} else {
+			// 				return false;
+			// 			}
+			// 		}
+			// 	);
+			//	
+			// 	expect(fails).to.be.eql(false);
+			// })
+
 		});
 
 
