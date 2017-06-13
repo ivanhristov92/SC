@@ -116,9 +116,9 @@ const getBulgarianVersion = getLanguageVersion("bg");
  * @param news - Array<PieceOfNews>
  */
 const getPreferredLanguageVersion = (req)=>news=>
-	_.equals(req.params.language, "en") ?
-		getEnglishVersion(news)	:
-		getBulgarianVersion(news);
+	_.equals(req.params.language, "bg") ?
+		getBulgarianVersion(news):
+		getEnglishVersion(news);
 
 
 
