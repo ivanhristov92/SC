@@ -8,6 +8,7 @@ const server   = keystone.app;
 
 const News     = keystone.list('News');
 const NewsInt  = require('../../../api/news/news-list').test;
+const NewsIntQ = require('../../../api/news/news-by-query').test;
 const chai 	   = require("chai");
 const expect   = chai.expect;
 const should   = chai.should();
@@ -460,4 +461,22 @@ describe('News module Internal Functions', () => {
 			});
 		});
 	});
+	
+	
+	
+	
+	describe("'news-by-query'", ()=>{
+		beforeEach(cleanNews)
+		
+		describe("it should export a getByQuery function", ()=>{
+			
+			const getByQuery = require("../../../api/news").getByQuery;
+			
+			it("getByQuery should be a function", ()=>{
+				expect(getByQuery).to.be.a("function")
+			})
+			
+		})
+		
+	})
 });

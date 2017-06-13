@@ -174,7 +174,7 @@ describe('News module', () => {
 		});
 
 
-		it('it should get a single piece of news', (done) => {
+		it('it should get a single piece of news EN', (done) => {
 
 			let newNews = new News.model({
 				title: {en:'New News', bg: "Novi Novini"},
@@ -205,7 +205,7 @@ describe('News module', () => {
 			})
 		});
 
-		it('it should get a single piece of news', (done) => {
+		it('it should get a single piece of news BG', (done) => {
 
 			let newNews = new News.model({
 				title: {en:'New News', bg: "Zaglavie"},
@@ -252,10 +252,10 @@ describe('News module', () => {
 
 			new Promise((resolve, reject)=>{
 				newNews.save(function(err, post) {
-				if(err) reject(err);
-				const slug = post.slug;
-				resolve(slug);
-			});
+					if(err) reject(err);
+					const slug = post.slug;
+					resolve(slug);
+				});
 			})
 			.then(slug=>{
 				chai.request(server)
@@ -274,6 +274,7 @@ describe('News module', () => {
 					done();
 				});
 			})
+			.catch(err=>{throw err})
 
 		});
 

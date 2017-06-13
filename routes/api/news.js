@@ -47,3 +47,7 @@ exports.getById = require("./news/news-by-id").getById;
  * Get News By Slug
  */
 exports.getBySlug = require("./news/news-by-slug").getBySlug;
+ /**
+  * Get News Matching a Query
+  */
+ exports.getByQuery = require("./news/news-by-query").getByQuery;

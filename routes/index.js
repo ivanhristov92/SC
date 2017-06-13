@@ -47,5 +47,8 @@ exports = module.exports = function (app) {
 	app.get('/api/:language/news', keystone.middleware.api, routes.api.news.list);
 	app.get('/api/:language/news/:slug', keystone.middleware.api, routes.api.news.getBySlug);
 	app.get('/api/:language/news/id/:id', keystone.middleware.api, routes.api.news.getById);
+	
+	// search
+	app.get('/api/:language/search', keystone.middleware.api, routes.api.news.getByQuery);
 
 };
