@@ -514,7 +514,7 @@ describe('News module Internal Functions', () => {
 				.catch(err=>{
 					throw err;
 				})
-			})
+			});
 
 
 			it("_getByQuery should get ('sense') the closest matching ('7th Sense', '6th Sense' )", (done)=>{
@@ -529,15 +529,20 @@ describe('News module Internal Functions', () => {
 						NewsIntQ._getByQuery("sense")
 							.then(news=>{
 								news.length.should.be.eql(2);
-								news[0].title.en.should.be.eql("7th Sense");
-								news[1].title.en.should.be.eql("6th Sense");
+								let titles = {
+									[news[0].title.en]: [news[0].title.en] , 
+									[news[1].title.en]: [news[1].title.en]
+								};
+								expect(titles).to.have.property("7th Sense");
+								expect(titles).to.have.property("6th Sense");
+								
 								done();
 							});
 					})
 					.catch(err=>{
 						throw err;
 					})
-			})
+			});
 
 
 			it("_getByQuery should get ('PARTY') the closest matching ('Third Party' )", (done)=>{
@@ -559,7 +564,7 @@ describe('News module Internal Functions', () => {
 					.catch(err=>{
 						throw err;
 					})
-			})
+			});
 
 			it("_getByQuery should get ('PARTYies') the closest matching ('Third Party' )", (done)=>{
 				saveAPiece({title: {en: "First"}})
@@ -584,16 +589,6 @@ describe('News module Internal Functions', () => {
 			
 			
 		});
-		
-		describe("it should export a getByQuery function", ()=>{
-			
-			const getByQuery = require("../../../api/news").getByQuery;
-			
-			it("getByQuery should be a function", ()=>{
-				expect(getByQuery).to.be.a("function")
-			})
-			
-		})
 		
 	})
 });

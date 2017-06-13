@@ -9,9 +9,9 @@ const News 	      = keystone.list('News');
 const getPreferredLanguageVersion = require("./news-list").getPreferredLanguageVersion;
 const sendAPIResponse = require("./news-list").sendAPIResponse;
 
-const extractQuery = req =>
-	()=> Promise.resolve(req.query.query);
 
+const extractQuery = req => 
+	() => Promise.resolve(req.query.text);
 
 const _getByQuery = query =>
 	new Promise((resolve, reject)=>{

@@ -279,6 +279,42 @@ describe('News module', () => {
 		});
 
 	})
+
+
+
+
+	describe("it should export a getByQuery function", ()=>{
+
+		const getByQuery = require("../../../api/news").getByQuery;
+
+		it("getByQuery should be a function", ()=>{
+			expect(getByQuery).to.be.a("function")
+		})
+
+		it("getByQuery should return results", (done)=>{
+			saveAPiece({title: {en: "First"}})
+				.then(()=>saveAPiece({title: {en: "Second Hand"}}))
+				.then(()=>saveAPiece({title: {en: "Third Party"}}))
+				.then(()=>saveAPiece({title: {en: "4th July"}}))
+				.then(()=>saveAPiece({title: {en: "5th Amendment"}}))
+				.then(()=>saveAPiece({title: {en: "6th Sense"}}))
+				.then(()=>saveAPiece({title: {en: "7th Sense"}}))
+				.then(news=>{
+					chai.request(server)
+						.get('/api/en/search?text=PARTies')
+						.end((err, res) => {
+							if(err) throw err;
+							expect(res.body.news.length).to.be.eql(1);
+							expect(res.body.news[0].title).to.be.eql("Third Party");
+							done();
+						});
+				})
+				.catch(err=>{
+					throw err;
+				})
+		})
+
+	})
 })
 
 // TODO IMAGES
