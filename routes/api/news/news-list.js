@@ -7,7 +7,7 @@ const keystone    = require('keystone');
 const News 	      = keystone.list('News');
 const Maybe 	  = require("ramda-fantasy").Maybe;
 const Future 	  = require("ramda-fantasy").Future;
-
+const utils 	  = require("../utils");
 const _newsFields = require("../../../models/News")._newsFields;
 
 /**
@@ -116,7 +116,7 @@ const getBulgarianVersion = getLanguageVersion("bg");
  * @param news - Array<PieceOfNews>
  */
 const getPreferredLanguageVersion = (req)=>news=>
-	_.equals(req.params.language, "bg") ?
+		utils.language.isBulgarian(req) ?
 		getBulgarianVersion(news):
 		getEnglishVersion(news);
 

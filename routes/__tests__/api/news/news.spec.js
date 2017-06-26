@@ -284,12 +284,14 @@ describe('News module', () => {
 
 
 	describe("it should export a getByQuery function", ()=>{
+		beforeEach(cleanNews);
+		after(cleanNews);
 
 		const getByQuery = require("../../../api/news").getByQuery;
 
 		it("getByQuery should be a function", ()=>{
 			expect(getByQuery).to.be.a("function")
-		})
+		});
 
 		it("getByQuery should return results", (done)=>{
 			saveAPiece({title: {en: "First"}})

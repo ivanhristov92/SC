@@ -35,7 +35,5 @@ News.add({
 	createdAt: { type: Date, default: Date.now }
 });
 
-News.schema.index({'title.en': 'text', 'title.bg': 'text'});
-
 News.defaultColumns = 'title, state|20%, author|20%, publishedDate|20%';
 News.register();

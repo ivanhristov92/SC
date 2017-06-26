@@ -49,6 +49,6 @@ exports = module.exports = function (app) {
 	app.get('/api/:language/news/id/:id', keystone.middleware.api, routes.api.news.getById);
 	
 	// search
-	app.get('/api/:language/search', keystone.middleware.api, routes.api.news.getByQuery);
+	app.get('/api/:language/search', keystone.middleware.api, routes.api.news.getByQuery); //TODO add the getByQuery methods of the rest of the Models
 
 };
