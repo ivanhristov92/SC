@@ -288,7 +288,8 @@ describe('News module', () => {
 		after(cleanNews);
 
 		const getByQuery = require("../../../api/news").getByQuery;
-
+		const _getByQuery = getByQuery;
+		
 		it("getByQuery should be a function", ()=>{
 			expect(getByQuery).to.be.a("function")
 		});
@@ -303,7 +304,7 @@ describe('News module', () => {
 				.then(()=>saveAPiece({title: {en: "7th Sense"}}))
 				.then(news=>{
 					chai.request(server)
-						.get('/api/en/search?text=PARTies')
+						.get('/api/en/search?text=PARty')
 						.end((err, res) => {
 							if(err) throw err;
 							expect(res.body.news.length).to.be.eql(1);
@@ -316,7 +317,110 @@ describe('News module', () => {
 				})
 		})
 
+
+
+		it("_getByQuery should get ('4th') the closest matching ('4th July')", (done)=>{
+			saveAPiece({title: {en: "First"}})
+				.then(()=>saveAPiece({title: {en: "Second Hand"}}))
+				.then(()=>saveAPiece({title: {en: "Third Party"}}))
+				.then(()=>saveAPiece({title: {en: "4th July"}}))
+				.then(()=>saveAPiece({title: {en: "5th Amendment"}}))
+				.then(()=>saveAPiece({title: {en: "6th Sense"}}))
+				.then(news=>{
+					chai.request(server)
+						.get('/api/en/search?text=4th')
+						.end((err, res) => {
+							if(err) throw err;
+							expect(res.body.news.length).to.be.eql(1);
+							expect(res.body.news[0].title).to.be.eql("4th July");
+							done();
+						});
+				})
+				.catch(err=>{
+					throw err;
+				})
+
+		});
+
+		it("_getByQuery should get ('Hand') the closest matching ('Second Hand')", (done)=>{
+			saveAPiece({title: {en: "First"}})
+				.then(()=>saveAPiece({title: {en: "Second Hand"}}))
+				.then(()=>saveAPiece({title: {en: "Third Party"}}))
+				.then(()=>saveAPiece({title: {en: "4th July"}}))
+				.then(()=>saveAPiece({title: {en: "5th Amendment"}}))
+				.then(()=>saveAPiece({title: {en: "6th Sense"}}))
+				.then(()=>saveAPiece({title: {en: "7th Sense"}}))
+				.then(news=>{
+					chai.request(server)
+						.get('/api/en/search?text=Hand')
+						.end((err, res) => {
+							if(err) throw err;
+							expect(res.body.news.length).to.be.eql(1);
+							expect(res.body.news[0].title).to.be.eql("Second Hand");
+							done();
+						});
+				})
+				.catch(err=>{
+					throw err;
+				})
+		});
+
+
+		it("_getByQuery should get ('sense') the closest matching ('7th Sense', '6th Sense' )", (done)=>{
+			saveAPiece({title: {en: "First"}})
+				.then(()=>saveAPiece({title: {en: "Second Hand"}}))
+				.then(()=>saveAPiece({title: {en: "Third Party"}}))
+				.then(()=>saveAPiece({title: {en: "4th July"}}))
+				.then(()=>saveAPiece({title: {en: "5th Amendment"}}))
+				.then(()=>saveAPiece({title: {en: "6th Sense"}}))
+				.then(()=>saveAPiece({title: {en: "7th Sense"}}))
+				.then(news=>{
+					chai.request(server)
+						.get('/api/en/search?text=sense')
+						.end((err, res) => {
+							if(err) throw err;
+
+							res.body.news.length.should.be.eql(2);
+							let titles = {
+								[res.body.news[0].title]: [res.body.news[0].title] ,
+								[res.body.news[1].title]: [res.body.news[1].title]
+							};
+							expect(titles).to.have.property("7th Sense");
+							expect(titles).to.have.property("6th Sense");
+							done();
+						});
+				})
+				.catch(err=>{
+					throw err;
+				})
+		});
+
+
+		it("_getByQuery should get ('PARTY') the closest matching ('Third Party' )", (done)=>{
+			saveAPiece({title: {en: "First"}})
+				.then(()=>saveAPiece({title: {en: "Second Hand"}}))
+				.then(()=>saveAPiece({title: {en: "Third Party"}}))
+				.then(()=>saveAPiece({title: {en: "4th July"}}))
+				.then(()=>saveAPiece({title: {en: "5th Amendment"}}))
+				.then(()=>saveAPiece({title: {en: "6th Sense"}}))
+				.then(()=>saveAPiece({title: {en: "7th Sense"}}))
+				.then(news=>{
+
+					chai.request(server)
+						.get('/api/en/search?text=PARTY')
+						.end((err, res) => {
+							if(err) throw err;
+							expect(res.body.news.length).to.be.eql(1);
+							expect(res.body.news[0].title).to.be.eql("Third Party");
+							done();
+						});
+				})
+				.catch(err=>{
+					throw err;
+				})
+		});
+
 	})
-})
+});
 
 // TODO IMAGES

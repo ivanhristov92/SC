@@ -3,6 +3,7 @@
  */
 'use strict';
 
+
 const keystone = require("../../../../keystone");
 const server   = keystone.app;
 
@@ -468,124 +469,167 @@ describe('News module Internal Functions', () => {
 	describe("'news-by-query'", ()=>{
 		beforeEach(cleanNews)
 		
-		describe("it should export a _getByQuery internal function", ()=>{
+		describe("it should export a _getAll internal function", ()=>{
 			
-			it("_getByQuery should be a function", ()=>{
-				expect(NewsIntQ._getByQuery).to.be.a("function")
-			})
-			
-			it("_getByQuery should get ('4th') the closest matching ('4th July')", (done)=>{
-				saveAPiece({title: {en: "First"}})
-				.then(()=>saveAPiece({title: {en: "Second Hand"}}))
-				.then(()=>saveAPiece({title: {en: "Third Party"}}))
-				.then(()=>saveAPiece({title: {en: "4th July"}}))
-				.then(()=>saveAPiece({title: {en: "5th Amendment"}}))
-				.then(()=>saveAPiece({title: {en: "6th Sense"}}))
-					.then(news=>{
-						NewsIntQ._getByQuery("4th")
-							.then(news=>{
-								news.length.should.be.eql(1);
-								news[0].title.en.should.be.eql("4th July");
-								done();
-							});
-					})
-					.catch(err=>{
-						throw err;
-					})
-
+			it("_getAll should be a function", ()=>{
+				expect(NewsIntQ._getAll).to.be.a("function")
 			});
 
-			it("_getByQuery should get ('Hand') the closest matching ('Second Hand')", (done)=>{
-				saveAPiece({title: {en: "First"}})
-				.then(()=>saveAPiece({title: {en: "Second Hand"}}))
-				.then(()=>saveAPiece({title: {en: "Third Party"}}))
-				.then(()=>saveAPiece({title: {en: "4th July"}}))
-				.then(()=>saveAPiece({title: {en: "5th Amendment"}}))
-				.then(()=>saveAPiece({title: {en: "6th Sense"}}))
-				.then(()=>saveAPiece({title: {en: "7th Sense"}}))
-				.then(news=>{
-					NewsIntQ._getByQuery("Hand")
-						.then(news=>{
-							news.length.should.be.eql(1);
-							news[0].title.en.should.be.eql("Second Hand");
-							done();
-						});
-				})
-				.catch(err=>{
-					throw err;
-				})
+			it("_getAll should return a Promise", ()=>{
+				expect(NewsIntQ._getAll().then).to.be.a("function")
+				expect(NewsIntQ._getAll().catch).to.be.a("function")
 			});
 
-
-			it("_getByQuery should get ('sense') the closest matching ('7th Sense', '6th Sense' )", (done)=>{
+			it("_getAll should resolve to all news", (done)=>{
 				saveAPiece({title: {en: "First"}})
 					.then(()=>saveAPiece({title: {en: "Second Hand"}}))
 					.then(()=>saveAPiece({title: {en: "Third Party"}}))
 					.then(()=>saveAPiece({title: {en: "4th July"}}))
 					.then(()=>saveAPiece({title: {en: "5th Amendment"}}))
 					.then(()=>saveAPiece({title: {en: "6th Sense"}}))
-					.then(()=>saveAPiece({title: {en: "7th Sense"}}))
-					.then(news=>{
-						NewsIntQ._getByQuery("sense")
+					.then(()=>{
+						NewsIntQ._getAll()
 							.then(news=>{
-								news.length.should.be.eql(2);
-								let titles = {
-									[news[0].title.en]: [news[0].title.en] , 
-									[news[1].title.en]: [news[1].title.en]
-								};
-								expect(titles).to.have.property("7th Sense");
-								expect(titles).to.have.property("6th Sense");
+								news.length.should.be.eql(6);
+								done();
+							});
+					});
+			});
+
+			it("getAllAndFilterByLanguage should be a function", ()=>{
+				expect(NewsIntQ.getAllAndFilterByLanguage).to.be.a("function")
+			});
+			
+
+			it("getAllAndFilterByLanguage should filter correctly", (done)=>{
+				saveAPiece({title: {en: "First"}})
+					.then(()=>saveAPiece({title: {en: "Second Hand", bg: "Заглавие"}}))
+					.then(()=>saveAPiece({title: {en: "Third Party", bg: "Трета страна"}}))
+					.then(()=>{
+						let req = {
+							params: {
+								language: "bg"
+							}
+						};
+						NewsIntQ.getAllAndFilterByLanguage(req)()
+							.then(news=>{
+								news.length.should.be.eql(3);
+								news[0].title.should.be.eql("");
+								news[1].title.should.be.eql("Заглавие");
+								news[2].title.should.be.eql("Трета страна");
+								done();
+							});
+					})
+			});
+
+
+			it("_generateFuzzyOptions should be a function", ()=>{
+				expect(NewsIntQ._generateFuzzyOptions).to.be.a("function")
+			});
+
+			it("_generateFuzzyOptions should generate correctly", ()=>{
+			
+				expect(NewsIntQ._generateFuzzyOptions()).to.be.eql({
+					shouldSort: true,
+					threshold: 0.2,
+					keys: [
+						"title"
+					]
+				});
+
+				let req2 = {
+					params: {
+						language: "en"
+					}
+				};
+				
+				expect(NewsIntQ._generateFuzzyOptions(req2)).to.be.eql({
+					shouldSort: true,
+					threshold: 0.2,
+					keys: [
+						"title"
+					]
+				})
+				
+			});
+
+			
+			it("_extractQuery should be a function", ()=>{
+				expect(NewsIntQ._extractQuery).to.be.a("function")
+			});
+
+			it("_extractQuery should return correctly", ()=>{
+				let req = {
+					query: {
+						text: "some text"
+					}
+				};
+				expect(NewsIntQ._extractQuery(req)).to.be.a("function");
+				expect(NewsIntQ._extractQuery(req)()).to.be.eql("some text")
+			});
+			
+			it("_doFuzzySearch should be a function", ()=>{
+				expect(NewsIntQ._doFuzzySearch).to.be.a("function")
+			});
+			
+			it("_doFuzzySearch should do a search", (done)=>{
+				let req = {
+					query: {
+						text: "заг"
+					},
+					params: {
+						language: "bg"
+					}
+				};
+
+				saveAPiece({title: {en: "First"}})
+					.then(()=>saveAPiece({title: {en: "Second Hand", bg: "Заглавие"}}))
+					.then(()=>saveAPiece({title: {en: "Third Party", bg: "Трета страна"}}))
+					.then(()=>{
+						NewsIntQ.getAllAndFilterByLanguage(req)()
+							.then(news=>{
+								news.length.should.be.eql(3);
+								let results = NewsIntQ._doFuzzySearch(
+									NewsIntQ._generateFuzzyOptions(req),
+									news,
+									"заг"
+								);
 								
+								results[0].title.should.be.eql("Заглавие")
 								done();
 							});
-					})
-					.catch(err=>{
-						throw err;
-					})
+					});
 			});
 
-
-			it("_getByQuery should get ('PARTY') the closest matching ('Third Party' )", (done)=>{
-				saveAPiece({title: {en: "First"}})
-					.then(()=>saveAPiece({title: {en: "Second Hand"}}))
-					.then(()=>saveAPiece({title: {en: "Third Party"}}))
-					.then(()=>saveAPiece({title: {en: "4th July"}}))
-					.then(()=>saveAPiece({title: {en: "5th Amendment"}}))
-					.then(()=>saveAPiece({title: {en: "6th Sense"}}))
-					.then(()=>saveAPiece({title: {en: "7th Sense"}}))
-					.then(news=>{
-						NewsIntQ._getByQuery("PARTY")
-							.then(news=>{
-								news.length.should.be.eql(1);
-								news[0].title.en.should.be.eql("Third Party");
-								done();
-							});
-					})
-					.catch(err=>{
-						throw err;
-					})
+			it("_doSearch should be a function", ()=>{
+				expect(NewsIntQ._doSearch).to.be.a("function")
 			});
 
-			it("_getByQuery should get ('PARTYies') the closest matching ('Third Party' )", (done)=>{
+			it("_doSearch should extract the query and do the search", (done)=>{
+				let req = {
+					query: {
+						text: "заг"
+					},
+					params: {
+						language: "bg"
+					}
+				};
+
 				saveAPiece({title: {en: "First"}})
-					.then(()=>saveAPiece({title: {en: "Second Hand"}}))
-					.then(()=>saveAPiece({title: {en: "Third Party"}}))
-					.then(()=>saveAPiece({title: {en: "4th July"}}))
-					.then(()=>saveAPiece({title: {en: "5th Amendment"}}))
-					.then(()=>saveAPiece({title: {en: "6th Sense"}}))
-					.then(()=>saveAPiece({title: {en: "7th Sense"}}))
-					.then(news=>{
-						NewsIntQ._getByQuery("PARTY")
+					.then(()=>saveAPiece({title: {en: "Second Hand", bg: "Заглавие"}}))
+					.then(()=>saveAPiece({title: {en: "Third Party", bg: "Трета страна"}}))
+					.then(()=>{
+						NewsIntQ.getAllAndFilterByLanguage(req)()
 							.then(news=>{
-								news.length.should.be.eql(1);
-								news[0].title.en.should.be.eql("Third Party");
+								news.length.should.be.eql(3);
+								let results = NewsIntQ._doSearch(req)(news);
+								results[0].title.should.be.eql("Заглавие");
 								done();
 							});
-					})
-					.catch(err=>{
-						throw err;
-					})
-			})
+					});
+			});
+			
+			
 			
 			
 		});

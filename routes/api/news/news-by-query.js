@@ -26,22 +26,14 @@ const _getAll = () =>
 
 const _extractQuery = req => ()=> req.query.text;
 
-const _generateFuzzyOptions = req => 
-	utils.language.isBulgarian() ?
-	{
-		shouldSort: true,
-		threshold: 0.2,
-		keys: [
-			"заглавие"
-		]
-	} :
-	{
+const _generateFuzzyOptions = () =>
+	({
 		shouldSort: true,
 		threshold: 0.2,
 		keys: [
 			"title"
 		]
-	};
+	});
 
 
 const _doFuzzySearch = _.curry((options, items, query) =>{
@@ -51,25 +43,31 @@ const _doFuzzySearch = _.curry((options, items, query) =>{
 
 const _doSearch = req => items =>
 	_.compose(
-		_doFuzzySearch(_generateFuzzyOptions(req), items),
+		_doFuzzySearch(_generateFuzzyOptions(), items),
 		_extractQuery(req)
 	)();
 
 
+const getAllAndFilterByLanguage = req => 
+	_.composeP(
+		getPreferredLanguageVersion(req),
+		_getAll
+	);
+		
 exports.test = {
 	_getAll,
 	_extractQuery,
 	_generateFuzzyOptions,
 	_doFuzzySearch,
-	_doSearch
+	_doSearch,
+	getAllAndFilterByLanguage
 };
 
-exports.getByQuery = ( req, res ) => 
+exports.getByQuery = ( req, res ) =>
 	_.composeP(
 		sendAPIResponse(res),
 		_doSearch(req),
-		getPreferredLanguageVersion(req),
-		_getAll
+		getAllAndFilterByLanguage(req)
 	)();
 	
 
