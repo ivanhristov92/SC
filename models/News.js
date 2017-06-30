@@ -21,14 +21,14 @@ var News = new keystone.List('News', {
 });
 
 News.add({
-	language: { type: Types.Select, label: '', options: 'en, bg', default: 'en' },
+	lang: { type: Types.Select, label: '', options: 'en, bg', default: 'en' },
 	title: {
-		en: { type: String, required: true, label: 'Title', dependsOn: { language: 'en' } },
-		bg: { type: String, required: false, label: 'Заглавие', dependsOn: { language: 'bg' }, default: "" }
+		en: { type: String, required: true, label: 'Title', dependsOn: { lang: 'en' } },
+		bg: { type: String, required: false, label: 'Заглавие', dependsOn: { lang: 'bg' }, default: "" }
 	},
 	content: {
-		en: { type: Types.Html, wysiwyg: true, height: 400, label: 'content extended', dependsOn: {language: 'en'}},
-		bg: {type: Types.Html, wysiwyg: true, height: 400, label: 'Съдържание', dependsOn: {language: 'bg'}}
+		en: { type: Types.Html, wysiwyg: true, height: 400, label: 'content extended', dependsOn: {lang: 'en'}},
+		bg: {type: Types.Html, wysiwyg: true, height: 400, label: 'Съдържание', dependsOn: {lang: 'bg'}}
 	},
 
 	featuredImage: { type: Types.CloudinaryImage, select: true, selectPrefix: 'sc' },

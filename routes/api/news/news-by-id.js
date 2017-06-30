@@ -9,8 +9,8 @@ const async 	  = require('async');
 const keystone    = require('keystone');
 const News 	      = keystone.list('News');
 
-const getPreferredLanguageVersion = require("./news-list").getPreferredLanguageVersion;
-const sendAPIResponse = require("./news-list").sendAPIResponse;
+const getPreferredLanguageVersion = require("../abstract/common").getPreferredLanguageVersion;
+const sendAPIResponse = require("../abstract/common").sendAPIResponse;
 
 
 const extractId = req => 

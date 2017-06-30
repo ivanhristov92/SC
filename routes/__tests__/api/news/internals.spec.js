@@ -8,7 +8,7 @@ const keystone = require("../../../../keystone");
 const server   = keystone.app;
 
 const News     = keystone.list('News');
-const NewsInt  = require('../../../api/news/news-list').test;
+const NewsInt  = require('../../../api/abstract/abstract-list').test;
 const NewsIntQ = require('../../../api/news/news-by-query').test;
 const chai 	   = require("chai");
 const expect   = chai.expect;

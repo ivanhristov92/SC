@@ -10,18 +10,25 @@ const utils 	  = require("../utils");
 
 const getPreferredLanguageVersion = require("../abstract/common").getPreferredLanguageVersion;
 const sendAPIResponse = require("../abstract/common").sendAPIResponse;
+const extractModelType 			   = require("./common").extractModelType;
 
-const _getAll = () =>
-	new Promise((resolve, reject)=>{
-		News.model.find({})
+const _getAll = req => () => {
+	
+	let AbstractModel = extractModelType(req);
+	
+	return new Promise((resolve, reject) => {
+		AbstractModel.find({})
 		/**
 		 *  @param news: Array<PieceOfNews>
 		 */
-		.exec( function( err, news ) {
-			if (err){reject(err)}
-			resolve(news);
-		});
+			.exec(function (err, items) {
+				if (err) {
+					reject(err)
+				}
+				resolve(items);
+			});
 	});
+}
 
 const _extractQuery = req => ()=> req.query.text;
 
