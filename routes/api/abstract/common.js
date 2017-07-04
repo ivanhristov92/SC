@@ -13,8 +13,6 @@ const Awards      = keystone.list('Awards');
 
 
 
-
-
 const getLanguageVersion = lang => news => {
 	return (news || []).map(piece =>
 		_newsFields.reduce((accumulator, key) => {
@@ -41,23 +39,29 @@ const getBulgarianVersion = getLanguageVersion("bg");
  * @param req - Express 'reqiest' object
  * @param news - Array<PieceOfNews>
  */
-exports.getPreferredLanguageVersion = (req)=>news=>
+
+const getPreferredLanguageVersion = (req) => news =>
 	utils.language.isBulgarian(req) ?
 		getBulgarianVersion(news):
 		getEnglishVersion(news);
 
+exports.getPreferredLanguageVersion = getPreferredLanguageVersion;
 
 /**
  *
- * @param as: String
+ * @param res: Express Response Object
+ * @param items: Array<Item>
  */
-exports.sendAPIResponse =  res => items =>{
+
+// sendAPIResponse :: ExpressRes -> Array<Items> -> ExpressRes
+const sendAPIResponse =  res => items =>
 	res.apiResponse({
 		items
-	})
-};
+	});
 
-exports.extractModelType = req => {
+exports.sendAPIResponse = sendAPIResponse;
+
+const extractModelType = req => {
 	switch(req.params.model){
 		case "news":
 			return News.model;
@@ -67,3 +71,14 @@ exports.extractModelType = req => {
 			throw new Error("Unknown Model Type");
 	}
 };
+
+exports.extractModelType = extractModelType;
+
+exports.test = {
+	getLanguageVersion,
+	getEnglishVersion,
+	getBulgarianVersion,
+	getPreferredLanguageVersion,
+	sendAPIResponse,
+	extractModelType
+}

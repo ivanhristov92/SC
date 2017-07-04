@@ -8,6 +8,8 @@ const keystone    = require('keystone');
 const News 	      = keystone.list('News');
 const utils 	  = require("../utils");
 
+const log = a => {console.log("eto tuk: !!!:", a); return a;}
+
 const getPreferredLanguageVersion = require("../abstract/common").getPreferredLanguageVersion;
 const sendAPIResponse = require("../abstract/common").sendAPIResponse;
 const extractModelType 			   = require("./common").extractModelType;
@@ -57,7 +59,8 @@ const _doSearch = req => items =>
 const getAllAndFilterByLanguage = req => 
 	_.composeP(
 		getPreferredLanguageVersion(req),
-		_getAll
+		log
+		,_getAll
 	);
 		
 exports.test = {

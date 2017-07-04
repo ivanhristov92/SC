@@ -48,27 +48,28 @@ const extractModelType 			   = require("./common").extractModelType;
 
 
 /**
- * getAllNews:: _ -> Array<PieceOfNews>
+ * getAll:: _ -> Array<PieceOfNews>
  */
-const getAllNews = req => ()=> {
+const getAll = req => ()=> {
 
 	let AbstractModel = extractModelType(req);
 
 	return new Promise((resolve, reject) => {
 		/**
-		 * @param news: Array<PieceOfNews>
+		 * @param items: Array<Item>
 		 */
-		AbstractModel.find().exec(function (err, news) {
+		AbstractModel.find().exec(function (err, items) {
 			if (err) return reject(err);
-			resolve(news);
+			resolve(items);
 		});
 	});
-}
+};
 
 /**
- * getLastNNews: Int -> Function -> Array<PieceOfNews>
+ * getLastNItems: ExpressReq -> Int -> _ -> Array<Item>
  */
-const getLastNNews = req => N => ()=> {
+const getLastNItems = req => N => ()=> {
+	
 	let AbstractModel = extractModelType(req);
 
 	return new Promise((resolve, reject) => {
@@ -78,26 +79,26 @@ const getLastNNews = req => N => ()=> {
 		AbstractModel.find()
 			.sort('-createdAt')
 			.limit(N)
-			.exec(function (err, news) {
+			.exec(function (err, items) {
 				if (err) return reject(err);
-				resolve(news);
+				resolve(items);
 			});
 	});
-}
+};
 /**
- * getTheDesiredAmountOfNews:: Req -> Function -> Function -> Array<PieceOfNews>
+ * getTheDesiredAmountOfItems :: Req -> _ -> _ -> Array<PieceOfNews>
  *
  * @param req - Express 'req' object
  */
-const getTheDesiredAmountOfNews = req => () =>
+const getTheDesiredAmountOfItems = req => () =>
 	req.query.last ?
-	getLastNNews(req)(req.query.last)() :
-	getAllNews(req)();
+	getLastNItems(req)(req.query.last)() :
+	getAll(req)();
 
 exports.test = {
-	getAllNews,
-	getLastNNews,
-	getTheDesiredAmountOfNews,
+	getAll,
+	getLastNItems,
+	getTheDesiredAmountOfItems,
 	sendAPIResponse
 };
 
@@ -108,5 +109,5 @@ exports.list = ( req, res ) =>
 	_.composeP(
 		sendAPIResponse(res),
 		getPreferredLanguageVersion(req),
-		getTheDesiredAmountOfNews(req)
+		getTheDesiredAmountOfItems(req)
 	)();

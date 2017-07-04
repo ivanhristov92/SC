@@ -29,7 +29,7 @@ const _getBySlug = req => slug => {
 	let AbstractModel = extractModelType(req);
 
 	return new Promise((resolve, reject) => {
-		AbstractModel.model.find({slug})
+		AbstractModel.find({slug})
 		/**
 		 *  @param news: Array<PieceOfNews>
 		 */
