@@ -10,8 +10,8 @@ const News 	      = keystone.list('News');
 const Awards      = keystone.list('Awards');
 
 
-
-
+const allModels = [News, Awards];
+exports.allModels = allModels;
 
 const getLanguageVersion = lang => news => {
 	return (news || []).map(piece =>

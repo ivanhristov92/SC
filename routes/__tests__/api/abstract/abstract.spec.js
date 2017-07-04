@@ -42,7 +42,7 @@ describe('Abstract module', () => {
 
 		it('it should return a Promise', (done) => {
 			let newsListResult = chai.request(server)
-				.get('/api/en/news')
+				.get('/api/en/model/news')
 				.end((err, res) => {
 					expect(newsListResult.then).to.be.a('Function')
 					expect(newsListResult.catch).to.be.a('Function')
@@ -52,7 +52,7 @@ describe('Abstract module', () => {
 
 		it('it should GET all the news', (done) => {
 			chai.request(server)
-			.get('/api/en/news')
+			.get('/api/en/model/news')
 			.end((err, res) => {
 
 				res.should.have.status(200);
@@ -78,7 +78,7 @@ describe('Abstract module', () => {
 			.then(()=>{
 				// post has been saved	
 				chai.request(server)
-					.get('/api/en/news')
+					.get('/api/en/model/news')
 					.end((err, res) => {
 					expect(res.body.items.length).to.be.eql(1);
 				let pieceOfNews = res.body.items[0];
@@ -100,7 +100,7 @@ describe('Abstract module', () => {
 			newNews.save(function(err) {
 				// post has been saved	
 				chai.request(server)
-				.get('/api/en/news')
+				.get('/api/en/model/news')
 				.end((err, res) => {
 					expect(res.body.items.length).to.be.eql(1);
 					let pieceOfNews = res.body.items[0];
@@ -125,7 +125,7 @@ describe('Abstract module', () => {
 			.then(()=> saveAPiece({title: {en: "sixth"}}))
 			.then(resp=>{
 				chai.request(server)
-				.get('/api/en/news?last=3')
+				.get('/api/en/model/news?last=3')
 				.end((err,res)=>{
 					expect(res.body.items.length).to.be.eql(3);
 					expect(res.body.items[0].title).to.be.eql("sixth");
@@ -150,7 +150,7 @@ describe('Abstract module', () => {
 			.then(()=> saveAPiece({title: {en:"sixth", bg: ""}}))
 			.then(resp=>{
 					chai.request(server)
-						.get('/api/en/news?last=4')
+						.get('/api/en/model/news?last=4')
 						.end((err,res)=>{
 							expect(res.body.items.length).to.be.eql(4);
 							expect(res.body.items[0].title).to.be.eql("sixth");
@@ -190,7 +190,7 @@ describe('Abstract module', () => {
 			})
 			.then(id=>{
 				chai.request(server)
-				.get(`/api/en/news/id/${id}`)
+				.get(`/api/en/model/news/id/${id}`)
 				.end((err, res) => {
 					res.should.have.status(200);
 					res.body.should.be.an("object");
@@ -221,7 +221,7 @@ describe('Abstract module', () => {
 			})
 				.then(id=>{
 					chai.request(server)
-						.get(`/api/bg/news/id/${id}`)
+						.get(`/api/bg/model/news/id/${id}`)
 						.end((err, res) => {
 							res.should.have.status(200);
 							res.body.items.length.should.be.eql(1);
@@ -260,7 +260,7 @@ describe('Abstract module', () => {
 			})
 			.then(slug=>{
 				chai.request(server)
-				.get(`/api/en/news/${slug}`)
+				.get(`/api/en/model/news/${slug}`)
 				.end((err, res) => {
 					res.should.have.status(200);
 					res.body.should.be.an("object");
@@ -284,144 +284,145 @@ describe('Abstract module', () => {
 
 
 
-	// describe("it should export a getByQuery function", ()=>{
-	// 	beforeEach(cleanNews);
-	// 	after(cleanNews);
-    //
-	// 	const getByQuery = require("../../../api/news").getByQuery;
-	// 	const _getByQuery = getByQuery;
-	//	
-	// 	it("getByQuery should be a function", ()=>{
-	// 		expect(getByQuery).to.be.a("function")
-	// 	});
-    //
-	// 	it("getByQuery should return results", (done)=>{
-	// 		saveAPiece({title: {en: "First"}})
-	// 			.then(()=>saveAPiece({title: {en: "Second Hand"}}))
-	// 			.then(()=>saveAPiece({title: {en: "Third Party"}}))
-	// 			.then(()=>saveAPiece({title: {en: "4th July"}}))
-	// 			.then(()=>saveAPiece({title: {en: "5th Amendment"}}))
-	// 			.then(()=>saveAPiece({title: {en: "6th Sense"}}))
-	// 			.then(()=>saveAPiece({title: {en: "7th Sense"}}))
-	// 			.then(news=>{
-	// 				chai.request(server)
-	// 					.get('/api/en/search?text=PARty')
-	// 					.end((err, res) => {
-	// 						if(err) throw err;
-	// 						expect(res.body.items.length).to.be.eql(1);
-	// 						expect(res.body.items[0].title).to.be.eql("Third Party");
-	// 						done();
-	// 					});
-	// 			})
-	// 			.catch(err=>{
-	// 				throw err;
-	// 			})
-	// 	})
-    //
-    //
-    //
-	// 	it("_getByQuery should get ('4th') the closest matching ('4th July')", (done)=>{
-	// 		saveAPiece({title: {en: "First"}})
-	// 			.then(()=>saveAPiece({title: {en: "Second Hand"}}))
-	// 			.then(()=>saveAPiece({title: {en: "Third Party"}}))
-	// 			.then(()=>saveAPiece({title: {en: "4th July"}}))
-	// 			.then(()=>saveAPiece({title: {en: "5th Amendment"}}))
-	// 			.then(()=>saveAPiece({title: {en: "6th Sense"}}))
-	// 			.then(news=>{
-	// 				chai.request(server)
-	// 					.get('/api/en/search?text=4th')
-	// 					.end((err, res) => {
-	// 						if(err) throw err;
-	// 						expect(res.body.items.length).to.be.eql(1);
-	// 						expect(res.body.items[0].title).to.be.eql("4th July");
-	// 						done();
-	// 					});
-	// 			})
-	// 			.catch(err=>{
-	// 				throw err;
-	// 			})
-    //
-	// 	});
-    //
-	// 	it("_getByQuery should get ('Hand') the closest matching ('Second Hand')", (done)=>{
-	// 		saveAPiece({title: {en: "First"}})
-	// 			.then(()=>saveAPiece({title: {en: "Second Hand"}}))
-	// 			.then(()=>saveAPiece({title: {en: "Third Party"}}))
-	// 			.then(()=>saveAPiece({title: {en: "4th July"}}))
-	// 			.then(()=>saveAPiece({title: {en: "5th Amendment"}}))
-	// 			.then(()=>saveAPiece({title: {en: "6th Sense"}}))
-	// 			.then(()=>saveAPiece({title: {en: "7th Sense"}}))
-	// 			.then(news=>{
-	// 				chai.request(server)
-	// 					.get('/api/en/search?text=Hand')
-	// 					.end((err, res) => {
-	// 						if(err) throw err;
-	// 						expect(res.body.items.length).to.be.eql(1);
-	// 						expect(res.body.items[0].title).to.be.eql("Second Hand");
-	// 						done();
-	// 					});
-	// 			})
-	// 			.catch(err=>{
-	// 				throw err;
-	// 			})
-	// 	});
-    //
-    //
-	// 	it("_getByQuery should get ('sense') the closest matching ('7th Sense', '6th Sense' )", (done)=>{
-	// 		saveAPiece({title: {en: "First"}})
-	// 			.then(()=>saveAPiece({title: {en: "Second Hand"}}))
-	// 			.then(()=>saveAPiece({title: {en: "Third Party"}}))
-	// 			.then(()=>saveAPiece({title: {en: "4th July"}}))
-	// 			.then(()=>saveAPiece({title: {en: "5th Amendment"}}))
-	// 			.then(()=>saveAPiece({title: {en: "6th Sense"}}))
-	// 			.then(()=>saveAPiece({title: {en: "7th Sense"}}))
-	// 			.then(news=>{
-	// 				chai.request(server)
-	// 					.get('/api/en/search?text=sense')
-	// 					.end((err, res) => {
-	// 						if(err) throw err;
-    //
-	// 						res.body.items.length.should.be.eql(2);
-	// 						let titles = {
-	// 							[res.body.items[0].title]: [res.body.items[0].title] ,
-	// 							[res.body.items[1].title]: [res.body.items[1].title]
-	// 						};
-	// 						expect(titles).to.have.property("7th Sense");
-	// 						expect(titles).to.have.property("6th Sense");
-	// 						done();
-	// 					});
-	// 			})
-	// 			.catch(err=>{
-	// 				throw err;
-	// 			})
-	// 	});
-    //
-    //
-	// 	it("_getByQuery should get ('PARTY') the closest matching ('Third Party' )", (done)=>{
-	// 		saveAPiece({title: {en: "First"}})
-	// 			.then(()=>saveAPiece({title: {en: "Second Hand"}}))
-	// 			.then(()=>saveAPiece({title: {en: "Third Party"}}))
-	// 			.then(()=>saveAPiece({title: {en: "4th July"}}))
-	// 			.then(()=>saveAPiece({title: {en: "5th Amendment"}}))
-	// 			.then(()=>saveAPiece({title: {en: "6th Sense"}}))
-	// 			.then(()=>saveAPiece({title: {en: "7th Sense"}}))
-	// 			.then(news=>{
-    //
-	// 				chai.request(server)
-	// 					.get('/api/en/search?text=PARTY')
-	// 					.end((err, res) => {
-	// 						if(err) throw err;
-	// 						expect(res.body.items.length).to.be.eql(1);
-	// 						expect(res.body.items[0].title).to.be.eql("Third Party");
-	// 						done();
-	// 					});
-	// 			})
-	// 			.catch(err=>{
-	// 				throw err;
-	// 			})
-	// 	});
-    //
-	// })
+	describe("it should export a getByQuery function", ()=>{
+		beforeEach(cleanNews);
+		after(cleanNews);
+
+		const getByQuery = require("../../../api/abstract").getByQuery;
+		const _getByQuery = getByQuery;
+
+		it("getByQuery should be a function", ()=>{
+			expect(getByQuery).to.be.a("function")
+		});
+
+		it("getByQuery should return results", (done)=>{
+			saveAPiece({title: {en: "First"}})
+				.then(()=>saveAPiece({title: {en: "Second Hand"}}))
+				.then(()=>saveAPiece({title: {en: "Third Party"}}))
+				.then(()=>saveAPiece({title: {en: "4th July"}}))
+				.then(()=>saveAPiece({title: {en: "5th Amendment"}}))
+				.then(()=>saveAPiece({title: {en: "6th Sense"}}))
+				.then(()=>saveAPiece({title: {en: "7th Sense"}}))
+				.then(news=>{
+					chai.request(server)
+						.get('/api/en/search?text=PARty')
+						.end((err, res) => {
+							if(err) throw err;
+							expect(res.body.items.News.length).to.be.eql(1);
+							expect(res.body.items.News[0].title).to.be.eql("Third Party");
+							done();
+						});
+				})
+				.catch(err=>{
+					throw err;
+				})
+		})
+        //
+        //
+        //
+		it("_getByQuery should get ('4th') the closest matching ('4th July')", (done)=>{
+			saveAPiece({title: {en: "First"}})
+				.then(()=>saveAPiece({title: {en: "Second Hand"}}))
+				.then(()=>saveAPiece({title: {en: "Third Party"}}))
+				.then(()=>saveAPiece({title: {en: "4th July"}}))
+				.then(()=>saveAPiece({title: {en: "5th Amendment"}}))
+				.then(()=>saveAPiece({title: {en: "6th Sense"}}))
+				.then(news=>{
+					chai.request(server)
+						.get('/api/en/search?text=4th')
+						.end((err, res) => {
+							if(err) throw err;
+							expect(res.body.items.News.length).to.be.eql(1);
+							expect(res.body.items.News[0].title).to.be.eql("4th July");
+							done();
+						});
+				})
+				.catch(err=>{
+					throw err;
+				})
+
+		});
+        //
+		it("_getByQuery should get ('Hand') the closest matching ('Second Hand')", (done)=>{
+			saveAPiece({title: {en: "First"}})
+				.then(()=>saveAPiece({title: {en: "Second Hand"}}))
+				.then(()=>saveAPiece({title: {en: "Third Party"}}))
+				.then(()=>saveAPiece({title: {en: "4th July"}}))
+				.then(()=>saveAPiece({title: {en: "5th Amendment"}}))
+				.then(()=>saveAPiece({title: {en: "6th Sense"}}))
+				.then(()=>saveAPiece({title: {en: "7th Sense"}}))
+				.then(news=>{
+					chai.request(server)
+						.get('/api/en/search?text=Hand')
+						.end((err, res) => {
+							if(err) throw err;
+							expect(res.body.items.News.length).to.be.eql(1);
+							expect(res.body.items.News[0].title).to.be.eql("Second Hand");
+							done();
+						});
+				})
+				.catch(err=>{
+					throw err;
+				})
+		});
+        //
+        //
+		it("_getByQuery should get ('sense') the closest matching ('7th Sense', '6th Sense' )", (done)=>{
+			saveAPiece({title: {en: "First"}})
+				.then(()=>saveAPiece({title: {en: "Second Hand"}}))
+				.then(()=>saveAPiece({title: {en: "Third Party"}}))
+				.then(()=>saveAPiece({title: {en: "4th July"}}))
+				.then(()=>saveAPiece({title: {en: "5th Amendment"}}))
+				.then(()=>saveAPiece({title: {en: "6th Sense"}}))
+				.then(()=>saveAPiece({title: {en: "7th Sense"}}))
+				.then(news=>{
+					chai.request(server)
+						.get('/api/en/search?text=sense')
+						.end((err, res) => {
+							if(err) throw err;
+
+							res.body.items.News.length.should.be.eql(2);
+							let titles = {
+								[res.body.items.News[0].title]: [res.body.items.News[0].title] ,
+								[res.body.items.News[1].title]: [res.body.items.News[1].title]
+							};
+							expect(titles).to.have.property("7th Sense");
+							expect(titles).to.have.property("6th Sense");
+							done();
+						});
+				})
+				.catch(err=>{
+					throw err;
+				})
+		});
+
+
+		it("_getByQuery should get ('PARTY') the closest matching ('Third Party' )", (done)=>{
+			saveAPiece({title: {en: "First"}})
+				.then(()=>saveAPiece({title: {en: "Second Hand"}}))
+				.then(()=>saveAPiece({title: {en: "Third Party"}}))
+				.then(()=>saveAPiece({title: {en: "4th July"}}))
+				.then(()=>saveAPiece({title: {en: "5th Amendment"}}))
+				.then(()=>saveAPiece({title: {en: "6th Sense"}}))
+				.then(()=>saveAPiece({title: {en: "7th Sense"}}))
+				.then(news=>{
+
+					chai.request(server)
+						.get('/api/en/search?text=PARTY')
+						.end((err, res) => {
+							if(err) throw err;
+							console.log(res.body.items)
+							expect(res.body.items.News.length).to.be.eql(1);
+							expect(res.body.items.News[0].title).to.be.eql("Third Party");
+							done();
+						});
+				})
+				.catch(err=>{
+					throw err;
+				})
+		});
+
+	})
 });
 
 // TODO IMAGES

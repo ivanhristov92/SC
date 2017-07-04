@@ -44,9 +44,9 @@ exports = module.exports = function (app) {
 	// app.get('/protected', middleware.requireUser, routes.views.protected);
 
 	// app.get('/api/post/list', keystone.middleware.api, routes.api.posts.list);
-	app.get('/api/:language/:model', keystone.middleware.api, routes.api.abstract.list);
-	app.get('/api/:language/:model/:slug', keystone.middleware.api, routes.api.abstract.getBySlug);
-	app.get('/api/:language/:model/id/:id', keystone.middleware.api, routes.api.abstract.getById);
+	app.get('/api/:language/model/:model', keystone.middleware.api, routes.api.abstract.list);
+	app.get('/api/:language/model/:model/:slug', keystone.middleware.api, routes.api.abstract.getBySlug);
+	app.get('/api/:language/model/:model/id/:id', keystone.middleware.api, routes.api.abstract.getById);
 	
 	// search
 	app.get('/api/:language/search', keystone.middleware.api, routes.api.abstract.getByQuery); //TODO add the getByQuery methods of the rest of the Models
