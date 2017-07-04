@@ -5,7 +5,8 @@ const _ = require("ramda");
 const keystone    = require('keystone');
 
 const utils 	  = require("../utils");
-const _newsFields = require("../../../models/News")._newsFields;
+const _newsFields   = require("../../../models/News")._fields;
+const _awardsFields = require("../../../models/Awards")._fields;
 const News 	      = keystone.list('News');
 const Awards      = keystone.list('Awards');
 
@@ -13,8 +14,11 @@ const Awards      = keystone.list('Awards');
 const allModels = [News, Awards];
 exports.allModels = allModels;
 
-const getLanguageVersion = lang => news => {
-	return (news || []).map(piece =>
+
+const getLanguageVersion = lang => items => {
+	
+	
+	return (items || []).map(piece =>
 		_newsFields.reduce((accumulator, key) => {
 			let value = piece[key];
 			return Object.assign({}, accumulator, {

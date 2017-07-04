@@ -12,6 +12,15 @@ var Awards = new keystone.List('Awards', {
 	defaultSort: '-createdAt'
 });
 
+exports._fields = [
+	"_id",
+	"slug",
+	"title",
+	"content",
+	"featuredImage",
+	"createdAt"
+];
+
 Awards.add({
 	title: { type: String, required: true },
 	content: {

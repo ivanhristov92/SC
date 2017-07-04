@@ -1,7 +1,8 @@
 var keystone = require('keystone');
 var Types = keystone.Field.Types;
 
-exports._newsFields = [
+// for language selection
+exports._fields = [
 	"_id",
 	"slug",
 	"title",
