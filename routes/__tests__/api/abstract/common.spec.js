@@ -49,14 +49,14 @@ describe("Common functions", ()=>{
 	
 		it('getEnglishVersion should return an array', () => {
 			let news = [{title: "aa"}, {title: "aa"}, {title: "aa"}];
-			let _news = Common.getEnglishVersion(news);
+			let _news = Common.getEnglishVersion("News")(news);
 			expect(_news).to.be.a("Array");
 			expect(_news.length).to.be.eql(news.length);
 		});
 	
 		it('getEnglishVersion should return all items without any "en" or "bg" fields', () => {
 			let _news = [{title: {bg: "zaglavie", en: "title"}}];
-			let news = Common.getEnglishVersion(_news);
+			let news = Common.getEnglishVersion("News")(_news);
 			news.map(piece=>{
 				_newsFields.map(key=>{
 	
@@ -73,7 +73,7 @@ describe("Common functions", ()=>{
 	
 		it('getEnglishVersion should return the correct field values', () => {
 			let _news = [{title: {bg: "zaglavie", en: "title"}, content: {en: "aa", bg: "bb"}}];
-			let news = Common.getEnglishVersion(_news);
+			let news = Common.getEnglishVersion("News")(_news);
 			expect(news[0].title).to.be.eql("title");
 			expect(news[0].content).to.be.eql("aa");
 		});
@@ -92,14 +92,14 @@ describe("Common functions", ()=>{
 	
 		it('getBulgarianVersion should return an array', () => {
 			let news = [{}, {}, {}];
-			let _news = Common.getBulgarianVersion(news)
+			let _news = Common.getBulgarianVersion("News")(news)
 			expect(_news).to.be.a("Array");
 			expect(_news.length).to.be.eql(news.length);
 		});
 	
 		it('getBulgarianVersion should return all items without any "en" or "bg" fields', () => {
 			let _news = [{title: {bg: "zaglavie", en: "title"}}];
-			let news = Common.getEnglishVersion(_news);
+			let news = Common.getEnglishVersion("News")(_news);
 			news.map(piece=>{
 				Object.keys(piece).map(key=>{
 					let value = piece[key];
@@ -115,7 +115,7 @@ describe("Common functions", ()=>{
 	
 		it('getBulgarianVersion should return the correct field values', () => {
 			let _news = [{title: {bg: "zaglavie", en: "title"}, content: {en: "aa", bg: "bb"}}];
-			let news = Common.getBulgarianVersion(_news);
+			let news = Common.getBulgarianVersion("News")(_news);
 			expect(news[0].title).to.be.eql("zaglavie");
 			expect(news[0].content).to.be.eql("bb");
 		});

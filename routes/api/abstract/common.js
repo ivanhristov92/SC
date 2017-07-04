@@ -15,11 +15,36 @@ const allModels = [News, Awards];
 exports.allModels = allModels;
 
 
-const getLanguageVersion = lang => items => {
+const extractModelFields = ModelKey => {
+	switch(ModelKey){
+		case "News":
+			return _newsFields;
+		case "Awards":
+			return _awardsFields;
+		default :
+			return []
+	}
+};
+
+const extractModelKey = req => {
+	switch(req.params.model){
+		case "news":
+			return News.key;
+		case "awards":
+			return Awards.key;
+		default:
+			""
+	}
+};
+
+exports.extractModelKey = extractModelKey;
+
+const getLanguageVersion = lang => ModelKey => items => {
 	
+	let fields = extractModelFields(ModelKey);
 	
 	return (items || []).map(piece =>
-		_newsFields.reduce((accumulator, key) => {
+		fields.reduce((accumulator, key) => {
 			let value = piece[key];
 			return Object.assign({}, accumulator, {
 				[key]: (_.equals(typeof value, "object") && _.has(lang, value)) ? value[lang] : value
@@ -44,12 +69,20 @@ const getBulgarianVersion = getLanguageVersion("bg");
  * @param news - Array<PieceOfNews>
  */
 
-const getPreferredLanguageVersion = (req) => news =>
+const getPreferredLanguageVersion = req => ModelKey => news =>
 	utils.language.isBulgarian(req) ?
-		getBulgarianVersion(news):
-		getEnglishVersion(news);
+		getBulgarianVersion(ModelKey)(news):
+		getEnglishVersion(ModelKey)(news);
 
 exports.getPreferredLanguageVersion = getPreferredLanguageVersion;
+
+
+const getPreferredLanguageVersionForModel = req => {
+	let key = extractModelKey(req);
+	return getPreferredLanguageVersion(req)(key)
+};
+
+exports.getPreferredLanguageVersionForModel = getPreferredLanguageVersionForModel;
 
 /**
  *

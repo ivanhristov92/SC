@@ -52,7 +52,7 @@ const queryModel = req => (Model) =>
 	_.composeP(
 		  wrapAndLabel(Model.key)
 		, doSearch(req)
-		, getPreferredLanguageVersion(req)
+		, getPreferredLanguageVersion(req)(Model.key)
 		, getAllOf(Model.model)
 	)();
 

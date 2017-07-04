@@ -8,6 +8,7 @@ const News 	      = keystone.list('News');
 const Awards      = keystone.list('Awards');
 
 const getPreferredLanguageVersion  = require("./common").getPreferredLanguageVersion;
+const getPreferredLanguageVersionForModel  = require("./common").getPreferredLanguageVersionForModel;
 const sendAPIResponse 			   = require("./common").sendAPIResponse;
 
 const extractModelType = req => {
@@ -45,7 +46,7 @@ const _getBySlug = req => slug => {
 exports.getBySlug = ( req, res ) => 
 	_.composeP(
 		sendAPIResponse(res),
-		getPreferredLanguageVersion(req),
+		getPreferredLanguageVersionForModel(req),
 		_getBySlug(req),
 		extractSlug(req)
 	)();
