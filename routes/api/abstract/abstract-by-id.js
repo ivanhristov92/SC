@@ -3,18 +3,10 @@
  */
 // @flow
 'use strict';
-
-const _ 		  = require("ramda");
-const async 	  = require('async');
-const keystone    = require('keystone');
-const News 	      = keystone.list('News');
-const Awards      = keystone.list('Awards');
-
-const getPreferredLanguageVersion  = require("./common").getPreferredLanguageVersion;
-const getPreferredLanguageVersionForModel  = require("./common").getPreferredLanguageVersionForModel;
-const sendAPIResponse 			   = require("./common").sendAPIResponse;
-const extractModelType 			   = require("./common").extractModelType;
-const extractModelKey 			   = require("./common").extractModelKey;
+const _ = require("ramda");
+const getPreferredLanguageVersionForModel = require("./common").getPreferredLanguageVersionForModel;
+const sendAPIResponse = require("./common").sendAPIResponse;
+const extractModelType = require("./common").extractModelType;
 
 
 const extractId = req =>

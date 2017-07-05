@@ -1,15 +1,6 @@
 // @flow
 'use strict';
-
-const _ 		  = require("ramda");
-const async 	  = require('async');
-const keystone    = require('keystone');
-const Maybe 	  = require("ramda-fantasy").Maybe;
-const Future 	  = require("ramda-fantasy").Future;
-const utils 	  = require("../utils");
-const _newsFields = require("../../../models/News")._newsFields;
-
-const getPreferredLanguageVersion  = require("./common").getPreferredLanguageVersion;
+const _ = require("ramda");
 const getPreferredLanguageVersionForModel  = require("./common").getPreferredLanguageVersionForModel;
 const sendAPIResponse 			   = require("./common").sendAPIResponse;
 const extractModelType 			   = require("./common").extractModelType;

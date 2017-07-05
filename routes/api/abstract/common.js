@@ -21,12 +21,12 @@ const Models = Object.defineProperties({}, {
 });
 
 const ModelFields = Object.freeze({
-	[Models.News.key]: require("../../../models/News")._instanceFields,
+	[Models.News.key]  : require("../../../models/News")._instanceFields,
 	[Models.Awards.key]: require("../../../models/Awards")._instanceFields,
 	getByKey: ModelKey => ModelFields[ModelKey] || []
 });
 
-const ModelInUrl = Object.freeze({
+const _ModelInUrl = Object.freeze({
 	News: "news",
 	Awards: "awards"
 });
@@ -38,9 +38,9 @@ const extractModelFields = ModelKey => ModelFields.getByKey(ModelKey);
 
 const extractModelKey = req => {
 	switch(req.params.model){
-		case ModelInUrl.News:
+		case _ModelInUrl.News:
 			return Models.News.key;
-		case ModelInUrl.Awards:
+		case _ModelInUrl.Awards:
 			return Models.Awards.key;
 		default:
 			""
