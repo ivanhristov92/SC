@@ -45,8 +45,6 @@ const Models = Object.defineProperties({}, _.values(ModelKeys)
 );
 
 
-
-
 const extractModelFields = ModelKey => ModelFields.getByKey(ModelKey);
 
 
@@ -127,9 +125,6 @@ const sendAPIResponse =  res => items =>
 	});
 
 
-
-
-
 exports.allModels = Models.toArray();
 exports.allModelFields = ModelFields;
 
@@ -146,4 +141,4 @@ exports.test = {
 	getPreferredLanguageVersion,
 	sendAPIResponse,
 	extractModelType
-}
+};
