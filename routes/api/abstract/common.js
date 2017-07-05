@@ -5,45 +5,69 @@ const _ 		= require("ramda");
 const keystone  = require('keystone');
 const utils 	= require("../utils");
 
-const Models = Object.defineProperties({}, {
-	News: {
-		value: keystone.list("News"),
-		enumerable: true
-	},
-	Awards: {
-		value: keystone.list("Awards"),
-		enumerable: true
-	},
-	toArray: {
-		value: () => _.values(Models),
-		enumerable: false
-	}
+
+
+const ModelKeys = Object.freeze({
+	NewsKey: require("../../../models/News").ListKey,
+	AwardsKey: require("../../../models/Awards").ListKey,
+	ProductionsKey: require("../../../models/Productions").ListKey
 });
 
+
 const ModelFields = Object.freeze({
-	[Models.News.key]  : require("../../../models/News")._instanceFields,
-	[Models.Awards.key]: require("../../../models/Awards")._instanceFields,
+	[ModelKeys.NewsKey]  : require("../../../models/News")._instanceFields,
+	[ModelKeys.AwardsKey]: require("../../../models/Awards")._instanceFields,
+	[ModelKeys.ProductionsKey]: require("../../../models/Productions")._instanceFields,
 	getByKey: ModelKey => ModelFields[ModelKey] || []
 });
 
 
 const _ModelInUrl = Object.freeze({
-	News: "news",
-	Awards: "awards"
+	[ModelKeys.NewsKey]: "news",
+	[ModelKeys.AwardsKey]: "awards",
+	[ModelKeys.ProductionsKey]: "productions"
 });
+
+
+const Models = Object.defineProperties({}, _.values(ModelKeys)
+	.reduce((acc, key)=>
+		Object.assign({}, acc, {
+			[key]: {
+				value: keystone.list(key),
+				enumerable: true
+			},
+			toArray: {
+				value: () => _.values(Models),
+				enumerable: false
+			}
+		}),
+	{})
+);
+
+
+
 
 const extractModelFields = ModelKey => ModelFields.getByKey(ModelKey);
 
 
-const extractModelKey = req => {
-	switch(req.params.model){
-		case _ModelInUrl.News:
-			return Models.News.key;
-		case _ModelInUrl.Awards:
-			return Models.Awards.key;
-		default:
-			""
+const extractModelKey = req =>
+	_.keys(_ModelInUrl)
+	.filter(key=>_.equals(_ModelInUrl[key], req.params.model))
+	.map(key=>Models[key].key);
+
+
+const extractModelType = req =>{
+
+	let results = 
+		_.keys(_ModelInUrl)
+		.filter(key=>_.equals(_ModelInUrl[key], req.params.model))
+		.map(key=>Models[key].model);
+	
+	if(_.isEmpty(results)){
+		throw new Error("Unknown Model Type");
 	}
+	
+	return _.head(results);
 };
 
 
@@ -103,16 +127,7 @@ const sendAPIResponse =  res => items =>
 	});
 
 
-const extractModelType = req => {
-	switch(req.params.model){
-		case _ModelInUrl.News:
-			return Models.News.model;
-		case _ModelInUrl.Awards:
-			return Models.Awards.model;
-		default:
-			throw new Error("Unknown Model Type");
-	}
-};
+
 
 
 exports.allModels = Models.toArray();

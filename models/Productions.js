@@ -5,20 +5,19 @@ var Types = keystone.Field.Types;
  * News Model
  * ==========
  */
-
-const ListKey = 'Awards';
+const ListKey = "Productions";
 exports.ListKey = ListKey;
 
-var Awards = new keystone.List(ListKey, {
-	map: { name: 'title' },
-	autokey: { path: 'slug', from: 'title', unique: true },
+var Productions = new keystone.List(ListKey, {
+	map: { name: 'title.en' },
+	autokey: { path: 'slug', from: 'title.en', unique: true },
 	defaultSort: '-createdAt'
 });
 
-Awards.add({
+Productions.add({
 	lang: { type: Types.Select, label: '', options: 'en, bg', default: 'en' },
 	title: {
-		en: { type: String, required: true, label: 'Title', dependsOn: { lang: 'en' }, default: "Default Title" },
+		en: { type: String, required: true, label: 'Title', dependsOn: { lang: 'en' } },
 		bg: { type: String, required: false, label: 'Заглавие', dependsOn: { lang: 'bg' }, default: "" }
 	},
 	content: {
@@ -30,9 +29,10 @@ Awards.add({
 	createdAt: { type: Date, default: Date.now }
 });
 
-Awards.defaultColumns = 'title, state|20%, author|20%, publishedDate|20%';
-Awards.register();
+Productions.defaultColumns = 'title, state|20%, author|20%, publishedDate|20%';
+Productions.register();
 
+// for language selection
 exports._instanceFields = Object.freeze([
 	"_id",
 	"slug",

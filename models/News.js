@@ -1,12 +1,14 @@
 var keystone = require('keystone');
 var Types = keystone.Field.Types;
-
 /**
  * News Model
  * ==========
  */
 
-var News = new keystone.List('News', {
+const ListKey = "News";
+exports.ListKey = ListKey;
+
+var News = new keystone.List(ListKey, {
 	map: { name: 'title.en' },
 	autokey: { path: 'slug', from: 'title.en', unique: true },
 	defaultSort: '-createdAt'
