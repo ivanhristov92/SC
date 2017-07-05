@@ -1,12 +1,11 @@
 /**
  * Created by Game Station on 30.6.2017 г..
  */
-const _ = require("ramda");
-const keystone    = require('keystone');
+const _ 		= require("ramda");
+const keystone  = require('keystone');
+const utils 	= require("../utils");
 
-const utils 	  = require("../utils");
-
-const Models =Object.defineProperties({}, {
+const Models = Object.defineProperties({}, {
 	News: {
 		value: keystone.list("News"),
 		enumerable: true
@@ -27,6 +26,11 @@ const ModelFields = Object.freeze({
 	getByKey: ModelKey => ModelFields[ModelKey] || []
 });
 
+const ModelInUrl = Object.freeze({
+	News: "news",
+	Awards: "awards"
+});
+
 exports.allModels = Models.toArray();
 exports.allModelFields = ModelFields;
 
@@ -34,9 +38,9 @@ const extractModelFields = ModelKey => ModelFields.getByKey(ModelKey);
 
 const extractModelKey = req => {
 	switch(req.params.model){
-		case "news":
+		case ModelInUrl.News:
 			return Models.News.key;
-		case "awards":
+		case ModelInUrl.Awards:
 			return Models.Awards.key;
 		default:
 			""

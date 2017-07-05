@@ -12,15 +12,6 @@ var Awards = new keystone.List('Awards', {
 	defaultSort: '-createdAt'
 });
 
-exports._instanceFields = [
-	"_id",
-	"slug",
-	"title",
-	"content",
-	"featuredImage",
-	"createdAt"
-];
-
 Awards.add({
 	lang: { type: Types.Select, label: '', options: 'en, bg', default: 'en' },
 	title: {
@@ -38,3 +29,12 @@ Awards.add({
 
 Awards.defaultColumns = 'title, state|20%, author|20%, publishedDate|20%';
 Awards.register();
+
+exports._instanceFields = Object.freeze([
+	"_id",
+	"slug",
+	"title",
+	"content",
+	"featuredImage",
+	"createdAt"
+]);
