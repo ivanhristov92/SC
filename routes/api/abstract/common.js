@@ -26,15 +26,14 @@ const ModelFields = Object.freeze({
 	getByKey: ModelKey => ModelFields[ModelKey] || []
 });
 
+
 const _ModelInUrl = Object.freeze({
 	News: "news",
 	Awards: "awards"
 });
 
-exports.allModels = Models.toArray();
-exports.allModelFields = ModelFields;
-
 const extractModelFields = ModelKey => ModelFields.getByKey(ModelKey);
+
 
 const extractModelKey = req => {
 	switch(req.params.model){
@@ -47,7 +46,6 @@ const extractModelKey = req => {
 	}
 };
 
-exports.extractModelKey = extractModelKey;
 
 const getLanguageVersion = lang => ModelKey => items => {
 	
@@ -72,6 +70,7 @@ const getLanguageVersion = lang => ModelKey => items => {
 const getEnglishVersion   = getLanguageVersion("en");
 const getBulgarianVersion = getLanguageVersion("bg");
 
+
 /**
  * getPreferredLanguageVersion:: Req -> Array<PieceOfNews> -> Array<PieceOfNews>
  *
@@ -84,15 +83,12 @@ const getPreferredLanguageVersion = req => ModelKey => news =>
 		getBulgarianVersion(ModelKey)(news):
 		getEnglishVersion(ModelKey)(news);
 
-exports.getPreferredLanguageVersion = getPreferredLanguageVersion;
-
-
+		
 const getPreferredLanguageVersionForModel = req => {
 	let key = extractModelKey(req);
 	return getPreferredLanguageVersion(req)(key)
 };
 
-exports.getPreferredLanguageVersionForModel = getPreferredLanguageVersionForModel;
 
 /**
  *
@@ -106,20 +102,27 @@ const sendAPIResponse =  res => items =>
 		items
 	});
 
-exports.sendAPIResponse = sendAPIResponse;
 
 const extractModelType = req => {
 	switch(req.params.model){
-		case "news":
+		case _ModelInUrl.News:
 			return Models.News.model;
-		case "awards":
+		case _ModelInUrl.Awards:
 			return Models.Awards.model;
 		default:
 			throw new Error("Unknown Model Type");
 	}
 };
 
+
+exports.allModels = Models.toArray();
+exports.allModelFields = ModelFields;
+
+exports.sendAPIResponse = sendAPIResponse;
 exports.extractModelType = extractModelType;
+exports.getPreferredLanguageVersionForModel = getPreferredLanguageVersionForModel;
+exports.getPreferredLanguageVersion = getPreferredLanguageVersion;
+exports.extractModelKey = extractModelKey;
 
 exports.test = {
 	getLanguageVersion,

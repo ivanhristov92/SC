@@ -34,10 +34,12 @@ const getAllOf = (Model) => () =>
 
 const _extractQuery = req => ()=> req.query.text;
 
+
 const _doFuzzySearch = _.curry((options, items, query) =>{
 	let fuse = new Fuse(items, options);
 	return fuse.search(query);
 });
+
 
 const doSearch = req => items =>
 	_.compose(
@@ -45,8 +47,10 @@ const doSearch = req => items =>
 		_extractQuery(req)
 	)();
 
+		
 const wrapAndLabel = (label) => (items) => ({[label]: items});
 		
+
 const queryModel = req => (Model) => 
 	_.composeP(
 		wrapAndLabel(Model.key)
@@ -55,11 +59,14 @@ const queryModel = req => (Model) =>
 		, getAllOf(Model.model)
 	)();
 		
+		
 const queryAllModels = req => () => Promise.all(
 	AllModels.map(queryModel(req))
 );
 
+
 const formatResponse = _.reduce((acc, obj)=>_.merge(acc, obj), {});
+
 
 exports.getByQuery = ( req, res ) =>
 	_.composeP(

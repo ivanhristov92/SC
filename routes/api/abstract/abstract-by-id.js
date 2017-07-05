@@ -12,6 +12,7 @@ const extractModelType = require("./common").extractModelType;
 const extractId = req =>
 	()=> Promise.resolve(req.params.id);
 
+
 const _getById = req => id  => {
 	
 	let AbstractModel = extractModelType(req);
@@ -27,7 +28,6 @@ const _getById = req => id  => {
 			});
 	});
 };
-
 
 
 exports.getById = (req, res) =>
