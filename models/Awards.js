@@ -12,7 +12,7 @@ var Awards = new keystone.List('Awards', {
 	defaultSort: '-createdAt'
 });
 
-exports._fields = [
+exports._instanceFields = [
 	"_id",
 	"slug",
 	"title",
@@ -22,12 +22,17 @@ exports._fields = [
 ];
 
 Awards.add({
-	title: { type: String, required: true },
-	content: {
-		brief: { type: Types.Html, wysiwyg: true, height: 150 },
-		extended: { type: Types.Html, wysiwyg: true, height: 400 }
+	lang: { type: Types.Select, label: '', options: 'en, bg', default: 'en' },
+	title: {
+		en: { type: String, required: true, label: 'Title', dependsOn: { lang: 'en' }, default: "Default Title" },
+		bg: { type: String, required: false, label: 'Заглавие', dependsOn: { lang: 'bg' }, default: "" }
 	},
-	featuredImage: Types.CloudinaryImage,
+	content: {
+		en: { type: Types.Html, wysiwyg: true, height: 400, label: 'content extended', dependsOn: {lang: 'en'}},
+		bg: {type: Types.Html, wysiwyg: true, height: 400, label: 'Съдържание', dependsOn: {lang: 'bg'}}
+	},
+
+	featuredImage: { type: Types.CloudinaryImage, select: true, selectPrefix: 'sc' },
 	createdAt: { type: Date, default: Date.now }
 });
 

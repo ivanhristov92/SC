@@ -9,9 +9,6 @@ const Future 	  = require("ramda-fantasy").Future;
 const utils 	  = require("../utils");
 const _newsFields = require("../../../models/News")._newsFields;
 
-const News 	      = keystone.list('News');
-const Awards      = keystone.list('Awards');
-
 const getPreferredLanguageVersion  = require("./common").getPreferredLanguageVersion;
 const getPreferredLanguageVersionForModel  = require("./common").getPreferredLanguageVersionForModel;
 const sendAPIResponse 			   = require("./common").sendAPIResponse;

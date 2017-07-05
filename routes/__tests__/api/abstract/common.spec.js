@@ -14,7 +14,7 @@ const expect   = chai.expect;
 const should   = chai.should();
 const chaiHttp = require('chai-http');
 const sinon    = require('sinon');
-const _newsFields = require("../../../../models/News")._fields;
+const _newsFields = require("../../../../models/News")._instanceFields;
 const JSC 	   = require("jscheck");
 
 chai.use(chaiHttp);

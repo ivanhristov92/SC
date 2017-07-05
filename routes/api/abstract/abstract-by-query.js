@@ -8,7 +8,6 @@ const AllModels   = require("./common").allModels;
 const getPreferredLanguageVersion  = require("../abstract/common").getPreferredLanguageVersion;
 const sendAPIResponse 			   = require("../abstract/common").sendAPIResponse;
 
-
 const fuzzyOptions = ({
 	shouldSort: true,
 	threshold: 0.2,
@@ -50,12 +49,12 @@ const wrapAndLabel = (label) => (items) => ({[label]: items});
 		
 const queryModel = req => (Model) => 
 	_.composeP(
-		  wrapAndLabel(Model.key)
+		wrapAndLabel(Model.key)
 		, doSearch(req)
 		, getPreferredLanguageVersion(req)(Model.key)
 		, getAllOf(Model.model)
 	)();
-
+		
 const queryAllModels = req => () => Promise.all(
 	AllModels.map(queryModel(req))
 );

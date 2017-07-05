@@ -5,33 +5,39 @@ const _ = require("ramda");
 const keystone    = require('keystone');
 
 const utils 	  = require("../utils");
-const _newsFields   = require("../../../models/News")._fields;
-const _awardsFields = require("../../../models/Awards")._fields;
-const News 	      = keystone.list('News');
-const Awards      = keystone.list('Awards');
 
-
-const allModels = [News, Awards];
-exports.allModels = allModels;
-
-
-const extractModelFields = ModelKey => {
-	switch(ModelKey){
-		case "News":
-			return _newsFields;
-		case "Awards":
-			return _awardsFields;
-		default :
-			return []
+const Models =Object.defineProperties({}, {
+	News: {
+		value: keystone.list("News"),
+		enumerable: true
+	},
+	Awards: {
+		value: keystone.list("Awards"),
+		enumerable: true
+	},
+	toArray: {
+		value: () => _.values(Models),
+		enumerable: false
 	}
-};
+});
+
+const ModelFields = Object.freeze({
+	[Models.News.key]: require("../../../models/News")._instanceFields,
+	[Models.Awards.key]: require("../../../models/Awards")._instanceFields,
+	getByKey: ModelKey => ModelFields[ModelKey] || []
+});
+
+exports.allModels = Models.toArray();
+exports.allModelFields = ModelFields;
+
+const extractModelFields = ModelKey => ModelFields.getByKey(ModelKey);
 
 const extractModelKey = req => {
 	switch(req.params.model){
 		case "news":
-			return News.key;
+			return Models.News.key;
 		case "awards":
-			return Awards.key;
+			return Models.Awards.key;
 		default:
 			""
 	}
@@ -101,9 +107,9 @@ exports.sendAPIResponse = sendAPIResponse;
 const extractModelType = req => {
 	switch(req.params.model){
 		case "news":
-			return News.model;
+			return Models.News.model;
 		case "awards":
-			return Awards.model;
+			return Models.Awards.model;
 		default:
 			throw new Error("Unknown Model Type");
 	}
