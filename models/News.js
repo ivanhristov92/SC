@@ -8,13 +8,13 @@ var Types = keystone.Field.Types;
 const ListKey = "News";
 exports.ListKey = ListKey;
 
-var News = new keystone.List(ListKey, {
+var List = new keystone.List(ListKey, {
 	map: { name: 'title.en' },
 	autokey: { path: 'slug', from: 'title.en', unique: true },
 	defaultSort: '-createdAt'
 });
 
-News.add({
+List.add({
 	lang: { type: Types.Select, label: '', options: 'en, bg', default: 'en' },
 	title: {
 		en: { type: String, required: true, label: 'Title', dependsOn: { lang: 'en' } },
@@ -29,8 +29,8 @@ News.add({
 	createdAt: { type: Date, default: Date.now }
 });
 
-News.defaultColumns = 'title, state|20%, author|20%, publishedDate|20%';
-News.register();
+List.defaultColumns = 'title, state|20%, author|20%, publishedDate|20%';
+List.register();
 
 // for language selection
 exports._instanceFields = Object.freeze([

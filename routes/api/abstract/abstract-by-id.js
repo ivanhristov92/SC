@@ -38,4 +38,3 @@ exports.getById = (req, res) =>
 		_getById(req),
 		extractId(req)
 	)();
-		
