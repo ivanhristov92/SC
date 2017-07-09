@@ -96,7 +96,7 @@ const getTheDesiredAmountOfItems = req => () =>
 	getAll(req)();
 
 
-const FutureList = req =>
+const futureList = req =>
 	_.compose(
 		_.map(getPreferredLanguageVersionForModel(req))
 		, getTheDesiredAmountOfItems(req)
@@ -106,11 +106,11 @@ exports.test = {
 	getAll,
 	getLastNItems,
 	getTheDesiredAmountOfItems,
-	FutureList
+	futureList
 };
 
 exports.list = ( req, res ) =>
-	FutureList(req).fork(
+	futureList(req).fork(
 		err => sendAPIError(res)(404), 
 		data => sendAPIResponse(res)(data)
 	);
