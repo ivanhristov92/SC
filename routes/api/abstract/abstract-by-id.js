@@ -6,10 +6,10 @@
 const _ = require("ramda");
 const getPreferredLanguageVersionForModel = require("./common").getPreferredLanguageVersionForModel;
 const sendAPIResponse = require("./common").sendAPIResponse;
-const sendAPIError 		 = require("./common").sendAPIError;
+const sendAPIError  = require("./common").sendAPIError;
 const extractModelType = require("./common").extractModelType;
-const Future 					   = require("ramda-fantasy").Future;
-const Maybe 					   = require("ramda-fantasy").Maybe;
+const Future = require("ramda-fantasy").Future;
+const Maybe = require("ramda-fantasy").Maybe;
 
 
 const extractId = req => _.always(req.params.id);

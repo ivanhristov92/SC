@@ -12,6 +12,7 @@ const ModelKeys = Object.freeze({
 	AwardsKey: require("../../../models/Awards").ListKey,
 	ProductionsKey: require("../../../models/Productions").ListKey,
 	ServicesKey: require("../../../models/Services").ListKey,
+	PrizesKey: require("../../../models/Prizes").ListKey,
 });
 
 
@@ -20,6 +21,7 @@ const ModelFields = Object.freeze({
 	[ModelKeys.AwardsKey]: require("../../../models/Awards")._instanceFields,
 	[ModelKeys.ProductionsKey]: require("../../../models/Productions")._instanceFields,
 	[ModelKeys.ServicesKey]: require("../../../models/Services")._instanceFields,
+	[ModelKeys.PrizesKey]: require("../../../models/Prizes")._instanceFields,
 	getByKey: ModelKey => ModelFields[ModelKey] || []
 });
 
@@ -28,7 +30,8 @@ const _ModelInUrl = Object.freeze({
 	[ModelKeys.NewsKey]: "news",
 	[ModelKeys.AwardsKey]: "awards",
 	[ModelKeys.ProductionsKey]: "productions",
-	[ModelKeys.ServicesKey]: "services"
+	[ModelKeys.ServicesKey]: "services",
+	[ModelKeys.PrizesKey]: "prizes"
 });
 
 
