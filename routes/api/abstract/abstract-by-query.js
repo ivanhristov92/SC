@@ -7,6 +7,9 @@ const AllModels   = require("./common").allModels;
 
 const getPreferredLanguageVersion  = require("../abstract/common").getPreferredLanguageVersion;
 const sendAPIResponse 			   = require("../abstract/common").sendAPIResponse;
+const sendAPIError 			   = require("../abstract/common").sendAPIError;
+
+const Future = require("ramda-fantasy").Future;
 
 const fuzzyOptions = ({
 	shouldSort: true,
@@ -32,7 +35,7 @@ const getAllOf = (Model) => () =>
 	);
 	
 
-const _extractQuery = req => ()=> req.query.text;
+const _extractQuery = req => _.always(req.query.text);
 
 
 const _doFuzzySearch = _.curry((options, items, query) =>{
@@ -41,39 +44,44 @@ const _doFuzzySearch = _.curry((options, items, query) =>{
 });
 
 
-const doSearch = req => items =>
+const doSearch = _.curry((req, items) =>
 	_.compose(
 		_doFuzzySearch(fuzzyOptions, items),
 		_extractQuery(req)
-	)();
+	)()
+);
 
 		
-const wrapAndLabel = (label) => (items) => ({[label]: items});
+const wrapAndLabel = _.curry((label, items) => ({[label]: items}));
 		
 
-const queryModel = req => (Model) => 
+const queryModel = _.curry((req, Model) => 
 	_.composeP(
 		wrapAndLabel(Model.key)
 		, doSearch(req)
 		, getPreferredLanguageVersion(req)(Model.key)
 		, getAllOf(Model.model)
-	)();
-		
-		
-const queryAllModels = req => () => Promise.all(
-	AllModels.map(queryModel(req))
+	)()
 );
+		
+		
+const queryAllModels = req => () => 
+	Future((reject, resolve) => 
+		Promise.all(AllModels.map(queryModel(req)))
+			.then(resolve)
+			.catch(reject)
+	);
 
 
 const formatResponse = _.reduce((acc, obj)=>_.merge(acc, obj), {});
 
+const futureResults = req => _.compose(
+	_.map(formatResponse)
+	, queryAllModels(req)
+)();
 
 exports.getByQuery = ( req, res ) =>
-	_.composeP(
-		sendAPIResponse(res)
-		, formatResponse
-		, queryAllModels(req)
-	)();
-	
-	
-
+	futureResults(req).fork(
+		err => sendAPIError(res)(404),
+		data => sendAPIResponse(res)(data)
+	);
