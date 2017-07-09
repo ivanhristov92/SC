@@ -4,34 +4,34 @@ const _ 		  = require("ramda");
 const getPreferredLanguageVersionForModel = require("./common").getPreferredLanguageVersionForModel;
 const sendAPIResponse = require("./common").sendAPIResponse;
 const extractModelType = require("./common").extractModelType;
+const Future 		   = require("ramda-fantasy").Future;
 
 
-const extractSlug = req =>
-	()=> Promise.resolve(req.params.slug);
+const extractSlug = req => _.always( req.params.slug );
 
 
 const _getBySlug = req => slug => {
 
-	let AbstractModel = extractModelType(req);
+	let MaybeAbstractModel = extractModelType(req);
 
-	return new Promise((resolve, reject) => {
-		AbstractModel.find({slug})
-		/**
-		 *  @param news: Array<PieceOfNews>
-		 */
-			.exec(function (err, news) {
-				if (err) {
-					reject(err)
-				}
-				resolve(news);
-			});
-	});
+	return MaybeAbstractModel.chain(AbstractMode=>{
+		return Future((reject, resolve) => {
+			AbstractModel.find({slug})
+			/**
+			 *  @param news: Array<PieceOfNews>
+			 */
+				.exec((err, news) => {
+					if (err) reject(err)
+					resolve(news);
+				});
+		});
+	})
 }
 
 exports.getBySlug = ( req, res ) => 
-	_.composeP(
-		sendAPIResponse(res),
-		getPreferredLanguageVersionForModel(req),
+	_.compose(
+		_.map(sendAPIResponse(res)),
+		_.map(getPreferredLanguageVersionForModel(req)),
 		_getBySlug(req),
 		extractSlug(req)
 	)();

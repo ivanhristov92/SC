@@ -7,34 +7,37 @@ const _ = require("ramda");
 const getPreferredLanguageVersionForModel = require("./common").getPreferredLanguageVersionForModel;
 const sendAPIResponse = require("./common").sendAPIResponse;
 const extractModelType = require("./common").extractModelType;
+const Future 					   = require("ramda-fantasy").Future;
 
 
-const extractId = req =>
-	()=> Promise.resolve(req.params.id);
+const extractId = req => _.always(req.params.id);
 
 
-const _getById = req => id  => {
+const _getById = _.curry((req, id) => {
 	
-	let AbstractModel = extractModelType(req);
+	let MaybeAbstractModel = extractModelType(req);
 	
-	return new Promise((resolve, reject) => {
-		AbstractModel.findById(id)
-		/**
-		 *  @param news: PieceOfNews
-		 */
-			.exec((err, item) => {
-				if (err) return reject(err);
-				resolve(item);
-			});
-	});
-};
+	return MaybeAbstractModel.chain(AbstractModel => {
+	
+		return Future((reject, resolve) => {
+			AbstractModel.findById(id)
+			/**
+			 *  @param news: PieceOfNews
+			 */
+				.exec((err, item) => {
+					if (err) reject(err);
+					resolve(item);
+				});
+		});
+	})
+});
 
 
 exports.getById = (req, res) =>
-	_.composeP(
-		sendAPIResponse(res),
-		getPreferredLanguageVersionForModel(req),
-		Array,
-		_getById(req),
-		extractId(req)
+	_.compose(
+		_.map(sendAPIResponse(res))
+		, _.map(getPreferredLanguageVersionForModel(req))
+		, _.map(Array)
+		, _getById(req)
+		, extractId(req)
 	)();

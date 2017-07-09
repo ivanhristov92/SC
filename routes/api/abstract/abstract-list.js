@@ -3,7 +3,11 @@
 const _ = require("ramda");
 const getPreferredLanguageVersionForModel  = require("./common").getPreferredLanguageVersionForModel;
 const sendAPIResponse 			   = require("./common").sendAPIResponse;
+const sendAPIError  			   = require("./common").sendAPIError;
 const extractModelType 			   = require("./common").extractModelType;
+const Future 					   = require("ramda-fantasy").Future;
+const Either 					   = require("ramda-fantasy").Either;
+const Maybe 					   = require("ramda-fantasy").Maybe;
 
 /**
  * type PieceOfNews = {
@@ -39,41 +43,48 @@ const extractModelType 			   = require("./common").extractModelType;
 /**
  * getAll:: _ -> Array<PieceOfNews>
  */
-const getAll = req => ()=> {
-
-	let AbstractModel = extractModelType(req);
-
-	return new Promise((resolve, reject) => {
-		/**
-		 * @param items: Array<Item>
-		 */
-		AbstractModel.find().exec(function (err, items) {
-			if (err) return reject(err);
-			resolve(items);
-		});
-	});
-};
+const getAll = req => ()=> 
+	Future((reject, resolve) => 
+		_.pipe(
+			_.always(req)
+			, extractModelType
+			, _.ifElse(
+				Maybe.isJust
+				, _.map(AbstractModel =>
+					AbstractModel.find().exec((err, items) => {
+						if (err) reject(err);
+						resolve(items);
+					})
+				)
+				, reject
+			)
+		)()
+	);
 
 /**
  * getLastNItems: ExpressReq -> Int -> _ -> Array<Item>
  */
-const getLastNItems = req => N => ()=> {
-	
-	let AbstractModel = extractModelType(req);
+const getLastNItems = req => N => ()=> 
+	Future((reject, resolve) =>
+		_.pipe(
+			_.always(req)
+			, extractModelType
+			, _.ifElse(
+				Maybe.isJust
+				, _.map(AbstractModel =>
+					AbstractModel.find()
+						.sort('-createdAt')
+						.limit(N)
+						.exec((err, items) => {
+							if (err) reject(err);
+							resolve(items);
+						})
+				)
+				, reject
+			)
+		)()
+	);
 
-	return new Promise((resolve, reject) => {
-		/**
-		 * @param news: Array<PieceOfNews>
-		 */
-		AbstractModel.find()
-			.sort('-createdAt')
-			.limit(N)
-			.exec(function (err, items) {
-				if (err) return reject(err);
-				resolve(items);
-			});
-	});
-};
 /**
  * getTheDesiredAmountOfItems :: Req -> _ -> _ -> Array<PieceOfNews>
  *
@@ -84,16 +95,22 @@ const getTheDesiredAmountOfItems = req => () =>
 	getLastNItems(req)(req.query.last)() :
 	getAll(req)();
 
+
+const FutureList = req =>
+	_.compose(
+		_.map(getPreferredLanguageVersionForModel(req))
+		, getTheDesiredAmountOfItems(req)
+	)();
+
 exports.test = {
 	getAll,
 	getLastNItems,
 	getTheDesiredAmountOfItems,
+	FutureList
 };
 
-
 exports.list = ( req, res ) =>
-	_.composeP(
-		sendAPIResponse(res),
-		getPreferredLanguageVersionForModel(req),
-		getTheDesiredAmountOfItems(req)
-	)();
+	FutureList(req).fork(
+		err => sendAPIError(res)(404), 
+		data => sendAPIResponse(res)(data)
+	);

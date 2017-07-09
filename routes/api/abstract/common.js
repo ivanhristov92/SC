@@ -4,8 +4,8 @@
 const _ 		= require("ramda");
 const keystone  = require('keystone');
 const utils 	= require("../utils");
-
-
+const Maybe 	= require("ramda-fantasy").Maybe;
+const Either 	= require("ramda-fantasy").Either;
 
 const ModelKeys = Object.freeze({
 	NewsKey: require("../../../models/News").ListKey,
@@ -57,6 +57,7 @@ const extractModelKey = req =>
 	.map(key=>Models[key].key);
 
 
+// extractModelType :: req -> Either<Model>
 const extractModelType = req =>{
 
 	let results = 
@@ -65,10 +66,9 @@ const extractModelType = req =>{
 		.map(key=>Models[key].model);
 	
 	if(_.isEmpty(results)){
-		throw new Error("Unknown Model Type");
+		return Maybe.Nothing();
 	}
-	
-	return _.head(results);
+	return Maybe.Just(_.head(results));
 };
 
 
@@ -127,11 +127,15 @@ const sendAPIResponse =  res => items =>
 		items
 	});
 
+const sendAPIError = res => (code) => 
+	res.apiError(code);
+
 
 exports.allModels = Models.toArray();
 exports.allModelFields = ModelFields;
 
 exports.sendAPIResponse = sendAPIResponse;
+exports.sendAPIError = sendAPIError;
 exports.extractModelType = extractModelType;
 exports.getPreferredLanguageVersionForModel = getPreferredLanguageVersionForModel;
 exports.getPreferredLanguageVersion = getPreferredLanguageVersion;
@@ -143,5 +147,6 @@ exports.test = {
 	getBulgarianVersion,
 	getPreferredLanguageVersion,
 	sendAPIResponse,
+	sendAPIError,
 	extractModelType
 };
