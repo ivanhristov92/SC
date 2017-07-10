@@ -5,7 +5,7 @@ const _ 		= require("ramda");
 const keystone  = require('keystone');
 const utils 	= require("../utils");
 const Maybe 	= require("ramda-fantasy").Maybe;
-const Either 	= require("ramda-fantasy").Either;
+const Future 	= require("ramda-fantasy").Future;
 
 const ModelKeys = Object.freeze({
 	NewsKey: require("../../../models/News").ListKey,
@@ -133,6 +133,26 @@ const sendAPIResponse =  res => items =>
 const sendAPIError = res => (code) => 
 	res.apiError(code);
 
+
+/**
+ *
+ * @param fn :: reject -> resolve -> abstractModel -> Unit
+ */
+const ifModelDoElseReject = _.curry((req, fn) =>
+	Future((reject, resolve) =>
+		_.pipe(
+			_.always(req)
+			, extractModelType
+			, _.ifElse(
+				Maybe.isJust
+				, _.map(fn(reject, resolve))
+				, reject
+			)
+		)()
+	)
+);
+
+exports.ifModelDoElseReject = ifModelDoElseReject;
 
 exports.allModels = Models.toArray();
 exports.allModelFields = ModelFields;

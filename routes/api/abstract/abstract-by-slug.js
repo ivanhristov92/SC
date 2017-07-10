@@ -3,32 +3,22 @@
 const _ 		  = require("ramda");
 const getPreferredLanguageVersionForModel = require("./common").getPreferredLanguageVersionForModel;
 const sendAPIResponse  = require("./common").sendAPIResponse;
-const sendAPIError 	   = require("./common").sendAPIError;
-const extractModelType = require("./common").extractModelType;
-const Future 		   = require("ramda-fantasy").Future;
-const Maybe 		   = require("ramda-fantasy").Maybe;
-
+const sendAPIError = require("./common").sendAPIError;
+const ifModelDoElseReject = require("./common").ifModelDoElseReject;
 
 const extractSlug = req => _.always( req.params.slug );
 
-const _getBySlug = req => slug => 
-	Future((reject, resolve) => 
-		_.pipe(
-			_.always(req)
-			, extractModelType
-			, _.ifElse(
-				Maybe.isJust
-				, _.map(AbstractModel =>
-					AbstractModel.find({slug})
-						.exec((err, news) => {
-							if (err) reject(err);
-							resolve(news);
-						})
-				)
-				, reject
-			)
-		)()
-	);
+const _getBySlug = _.curry((req, slug) =>
+	ifModelDoElseReject(req)(
+		_.curry((reject, resolve, AbstractModel)=>
+			AbstractModel.find({slug})
+			.exec((err, news) => {
+				if (err) reject(err);
+				resolve(news);
+			})
+		)
+	)
+);
 			
 const futureList = req => _.compose(
 	_.map(getPreferredLanguageVersionForModel(req)),
