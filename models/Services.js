@@ -29,7 +29,7 @@ List.add({
 	createdAt: { type: Date, default: Date.now }
 });
 
-List.defaultColumns = 'title, state|20%, author|20%, publishedDate|20%';
+List.defaultColumns = 'title.en, createdAt|20%';
 List.register();
 
 // for language selection

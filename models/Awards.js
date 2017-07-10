@@ -10,8 +10,8 @@ const ListKey = 'Awards';
 exports.ListKey = ListKey;
 
 var List = new keystone.List(ListKey, {
-	map: { name: 'title' },
-	autokey: { path: 'slug', from: 'title', unique: true },
+	map: { name: 'title.en' },
+	autokey: { path: 'slug', from: 'title.en', unique: true },
 	defaultSort: '-createdAt'
 });
 
@@ -30,7 +30,7 @@ List.add({
 	createdAt: { type: Date, default: Date.now }
 });
 
-List.defaultColumns = 'title, state|20%, author|20%, publishedDate|20%';
+List.defaultColumns = 'title.en, createdAt|20%';
 List.register();
 
 exports._instanceFields = Object.freeze([

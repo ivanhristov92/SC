@@ -84,9 +84,8 @@ describe('Abstract module Internal Functions', () => {
 				expect(AbstractList.getAll).to.be.a("Function")
 			});
 
-			it('getAll should return a Promise', () => {
-				expect(AbstractList.getAll(req)().then).to.be.a("Function")
-				expect(AbstractList.getAll(req)().catch).to.be.a("Function")
+			it('getAll should return a Future', () => {
+				expect(AbstractList.getAll(req)().fork).to.be.a("Function")
 			});
 
 			it('getAll should get all items', (done) => {
@@ -95,13 +94,10 @@ describe('Abstract module Internal Functions', () => {
 					.then(() => saveAPiece({title: {en: "Third"}}))
 					.then(news => {
 						AbstractList.getAll(req)()
-							.then(news => {
+							.fork(err=>{throw err;}, news=>{
 								news.length.should.be.eql(3);
 								done();
 							});
-					})
-					.catch(err => {
-						throw err;
 					})
 			});
 
@@ -114,9 +110,8 @@ describe('Abstract module Internal Functions', () => {
 				expect(AbstractList.getLastNItems).to.be.a("Function")
 			});
 
-			it('getLastNNews should return a Promise', () => {
-				expect(AbstractList.getLastNItems(req)(3)().catch).to.be.a("Function")
-				expect(AbstractList.getLastNItems(req)(3)().then).to.be.a("Function")
+			it('getLastNNews should return a Future', () => {
+				expect(AbstractList.getLastNItems(req)(3)().fork).to.be.a("Function")
 			});
 
 			it('getLastNItems should get the last N(2) number of abstract', (done) => {
@@ -125,13 +120,11 @@ describe('Abstract module Internal Functions', () => {
 					.then(() => saveAPiece({title: {en: "Third"}}))
 					.then(news => {
 						AbstractList.getLastNItems(req)(2)()
-							.then(news => {
+							.fork(err=>{throw err},
+								news => {
 								news.length.should.be.eql(2);
 								done();
 							});
-					})
-					.catch(err => {
-						throw err;
 					})
 			});
 
@@ -144,13 +137,11 @@ describe('Abstract module Internal Functions', () => {
 					.then(() => saveAPiece({title: {en: "6th"}}))
 					.then(news => {
 						AbstractList.getLastNItems(req)(6)()
-							.then(news => {
+							.fork(err=>{throw err},
+								news => {
 								news.length.should.be.eql(6);
 								done();
 							});
-					})
-					.catch(err => {
-						throw err;
 					})
 			});
 
@@ -163,15 +154,13 @@ describe('Abstract module Internal Functions', () => {
 					.then(() => saveAPiece({title: {en: "6th"}}))
 					.then(news => {
 						AbstractList.getLastNItems(req)(3)()
-							.then(news => {
+							.fork(err=>{throw err},
+								news => {
 								news[0].title.en.should.be.eql("6th");
 								news[1].title.en.should.be.eql("5th");
 								news[2].title.en.should.be.eql("4th");
 								done();
 							});
-					})
-					.catch(err => {
-						throw err;
 					})
 			});
 
@@ -184,13 +173,11 @@ describe('Abstract module Internal Functions', () => {
 					.then(() => saveAPiece({title: {en: "6th"}}))
 					.then(news => {
 						return AbstractList.getLastNItems(req)(-3)()
-							.then(news => {
+							.fork(err=> {throw err},
+								news => {
 								expect(news.length).to.be.eql(3);
 								done();
 							});
-					})
-					.catch(err => {
-						throw err;
 					})
 			});
 
@@ -201,18 +188,13 @@ describe('Abstract module Internal Functions', () => {
 					.then(() => saveAPiece({title: {en: "4th"}}))
 					.then(() => saveAPiece({title: {en: "5th"}}))
 					.then(() => saveAPiece({title: {en: "6th"}}))
-					.then(news => {
+					.then(() => {
 						return AbstractList.getLastNItems(req)("sss")()
-							.then(news => {
+							.fork(err=>{throw err},
+								news => {
 								expect(news.length).to.be.eql(6);
 								done();
 							})
-							.catch(err => {
-								throw err
-							})
-					})
-					.catch(err => {
-						throw err;
 					})
 			});
 
@@ -225,16 +207,11 @@ describe('Abstract module Internal Functions', () => {
 					.then(() => saveAPiece({title: {en: "6th"}}))
 					.then(news => {
 						return AbstractList.getLastNItems(req)("4")()
-							.then(news => {
+							.fork(err=>{throw err},
+								news => {
 								expect(news.length).to.be.eql(4);
 								done();
 							})
-							.catch(err => {
-								throw err
-							})
-					})
-					.catch(err => {
-						throw err;
 					})
 			});
 
@@ -305,9 +282,11 @@ describe('Abstract module Internal Functions', () => {
 					.then(() => saveAPiece({title: {en: "Third"}}))
 					.then(() => {
 						AbstractList.getLastNItems(req)(2)()
-							.then(lastTwo => {
+							.fork(err=>{throw err}, 
+								lastTwo => {
 								AbstractList.getTheDesiredAmountOfItems(req)()
-									.then(desiredNews => {
+									.fork(err=>{throw err},
+										desiredNews => {
 										expect(lastTwo.length).to.be.eql(desiredNews.length);
 										done();
 									})
@@ -327,9 +306,11 @@ describe('Abstract module Internal Functions', () => {
 					.then(() => saveAPiece({title: {en: "Third"}}))
 					.then(() => {
 						AbstractList.getAll(req)()
-							.then(all => {
+							.fork(err=>{throw err},
+								all => {
 								AbstractList.getTheDesiredAmountOfItems(req)()
-									.then(desiredNews => {
+									.fork(err=>{throw err},
+										desiredNews => {
 										expect(all.length).to.be.eql(desiredNews.length);
 										done();
 									});
