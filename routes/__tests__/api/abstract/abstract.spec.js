@@ -308,7 +308,7 @@ describe('Abstract module', () => {
 						.get('/api/en/search?text=PARty')
 						.end((err, res) => {
 							if(err) throw err;
-							console.log(res.body.items)
+							
 							expect(res.body.items.News.length).to.be.eql(1);
 							expect(res.body.items.News[0].title).to.be.eql("Third Party");
 							done();

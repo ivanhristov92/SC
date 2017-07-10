@@ -549,7 +549,57 @@ describe("testing awards", ()=>{
 				})
 		}); // end of test
 
+		it('it should GET the correct item by id(2) EN', (done) => {
 
+			Promise.all([
+				saveAward({
+					title: {
+						en: "English title for award1",
+						bg: "Bulgarian title for award1"
+					},
+					content: {
+						en: "Some english content1",
+						bg: "Some bulgarian content1"
+					}
+				}),
+				saveAward({
+					title: {
+						en: "English title for award2",
+						bg: "Bulgarian title for award2"
+					},
+					content: {
+						en: "Some english content2",
+						bg: "Some bulgarian content2"
+					}
+				}),
+				saveAward({
+					title: {
+						en: "English title for award3",
+						bg: "Bulgarian title for award3"
+					},
+					content: {
+						en: "Some english content3",
+						bg: "Some bulgarian content3"
+					}
+				})
+			])
+
+				.then((awards)=>{
+
+					chai.request(server)
+						.get('/api/en/model/awards/id/' + awards[1]._id)
+						.end((err, res) => {
+							res.should.have.status(200);
+							expect(res.body.items).to.be.a('Array');
+							expect(res.body.items.length).to.be.eql(1);
+							expect(res.body.items[0].title).to.be.eql("English title for award2");
+							expect(res.body.items[0].content).to.be.eql("Some english content2");
+							done();
+						});
+				})
+		}); // end of test
+		
+		
 		it('it should GET the correct item by id(3) BG', (done) => {
 
 			Promise.all([
@@ -599,8 +649,169 @@ describe("testing awards", ()=>{
 						});
 				})
 		}); // end of test
+
+		it('it should GET the correct item by id(3) EN', (done) => {
+
+			Promise.all([
+				saveAward({
+					title: {
+						en: "English title for award1",
+						bg: "Bulgarian title for award1"
+					},
+					content: {
+						en: "Some english content1",
+						bg: "Some bulgarian content1"
+					}
+				}),
+				saveAward({
+					title: {
+						en: "English title for award2",
+						bg: "Bulgarian title for award2"
+					},
+					content: {
+						en: "Some english content2",
+						bg: "Some bulgarian content2"
+					}
+				}),
+				saveAward({
+					title: {
+						en: "English title for award3",
+						bg: "Bulgarian title for award3"
+					},
+					content: {
+						en: "Some english content3",
+						bg: "Some bulgarian content3"
+					}
+				})
+			])
+
+				.then((awards)=>{
+
+					chai.request(server)
+						.get('/api/en/model/awards/id/' + awards[2]._id)
+						.end((err, res) => {
+							res.should.have.status(200);
+							expect(res.body.items).to.be.a('Array');
+							expect(res.body.items.length).to.be.eql(1);
+							expect(res.body.items[0].title).to.be.eql("English title for award3");
+							expect(res.body.items[0].content).to.be.eql("Some english content3");
+							done();
+						});
+				})
+		}); // end of test
 		
 		
 	}); // end of describe for getById
 
+
+	describe("get by query function", ()=>{
+
+		beforeEach(clearAwards);
+		after(clearAwards);
+
+		it('it should GET the correct item by query (award3) EN', (done) => {
+
+			Promise.all([
+				saveAward({
+					title: {
+						en: "English title for award1",
+						bg: "Bulgarian title for award1"
+					},
+					content: {
+						en: "Some english content1",
+						bg: "Some bulgarian content1"
+					}
+				}),
+				saveAward({
+					title: {
+						en: "English title for award2",
+						bg: "Bulgarian title for award2"
+					},
+					content: {
+						en: "Some english content2",
+						bg: "Some bulgarian content2"
+					}
+				}),
+				saveAward({
+					title: {
+						en: "English title for award3",
+						bg: "Bulgarian title for award3"
+					},
+					content: {
+						en: "Some english content3",
+						bg: "Some bulgarian content3"
+					}
+				})
+			])
+
+				.then((awards)=>{
+
+					chai.request(server)
+						.get('/api/en/search?text=award3')
+						.end((err, res) => {
+							res.should.have.status(200);
+							expect(res.body.items.Awards).to.be.a('Array');
+							expect(res.body.items.Awards.length).to.be.eql(1);
+							expect(res.body.items.Awards[0].title).to.be.eql("English title for award3");
+							expect(res.body.items.Awards[0].content).to.be.eql("Some english content3");
+							done();
+						});
+				})
+		}); // end of test
+
+		it('it should GET the correct items by query(award) EN', (done) => {
+
+			Promise.all([
+				saveAward({
+					title: {
+						en: "English title for award1",
+						bg: "Bulgarian title for award1"
+					},
+					content: {
+						en: "Some english content1",
+						bg: "Some bulgarian content1"
+					}
+				}),
+				saveAward({
+					title: {
+						en: "English title for award2",
+						bg: "Bulgarian title for award2"
+					},
+					content: {
+						en: "Some english content2",
+						bg: "Some bulgarian content2"
+					}
+				}),
+				saveAward({
+					title: {
+						en: "English title for award3",
+						bg: "Bulgarian title for award3"
+					},
+					content: {
+						en: "Some english content3",
+						bg: "Some bulgarian content3"
+					}
+				})
+			])
+
+				.then((awards)=>{
+
+					chai.request(server)
+						.get('/api/en/search?text=award')
+						.end((err, res) => {
+							res.should.have.status(200);
+							expect(res.body.items.Awards).to.be.a('Array');
+							expect(res.body.items.Awards.length).to.be.eql(3);
+							expect(res.body.items.Awards[0].title).to.be.eql("English title for award1");
+							expect(res.body.items.Awards[0].content).to.be.eql("Some english content1");
+
+							expect(res.body.items.Awards[1].title).to.be.eql("English title for award2");
+							expect(res.body.items.Awards[1].content).to.be.eql("Some english content2");
+							done();
+						});
+				})
+		}); // end of test
+		
+		
+	}); // end of describe for getByQuery
 }); // end of describe
