@@ -1,6 +1,6 @@
 // @flow
 'use strict';
-const _ 		  = require("ramda");
+const _  = require("ramda");
 const getPreferredLanguageVersionForModel = require("./common").getPreferredLanguageVersionForModel;
 const sendAPIResponse  = require("./common").sendAPIResponse;
 const sendAPIError = require("./common").sendAPIError;
@@ -32,5 +32,3 @@ exports.getBySlug = ( req, res ) =>
 		err => sendAPIError(res)(404),
 		data => sendAPIResponse(res)(data)
 	);
-	
-

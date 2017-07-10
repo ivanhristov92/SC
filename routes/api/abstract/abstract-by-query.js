@@ -20,34 +20,24 @@ const fuzzyOptions = ({
 });
 
 
-const getAllOf = (Model) => () =>
+const getAllOf = Model => () =>
 	new Promise((resolve, reject) => 
 		Model.find({})
-		/**
-		 *  @param news: Array<PieceOfNews>
-		 */
-		.exec((err, items)=>{
-			if (err) {
-				reject(err)
-			}
-			resolve(items);
-		})
+		.exec((err, items)=> err ? reject(err) : resolve(items))
 	);
 	
 
 const _extractQuery = req => _.always(req.query.text);
 
 
-const _doFuzzySearch = _.curry((options, items, query) =>{
-	let fuse = new Fuse(items, options);
-	return fuse.search(query);
-});
+const _doFuzzySearch = _.curry((options, items, query) =>
+	new Fuse(items, options).search(query));
 
 
 const doSearch = _.curry((req, items) =>
 	_.compose(
-		_doFuzzySearch(fuzzyOptions, items),
-		_extractQuery(req)
+		_doFuzzySearch(fuzzyOptions, items)
+		, _extractQuery(req)
 	)()
 );
 

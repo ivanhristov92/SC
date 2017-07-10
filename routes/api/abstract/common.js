@@ -75,7 +75,7 @@ const extractModelType = req =>{
 };
 
 
-const getLanguageVersion = lang => ModelKey => items => {
+const getLanguageVersion = _.curry((lang, ModelKey, items) => {
 	
 	let fields = extractModelFields(ModelKey);
 	
@@ -87,7 +87,7 @@ const getLanguageVersion = lang => ModelKey => items => {
 			})
 		}, {})
 	);
-};
+});
 
 
 /**
@@ -106,10 +106,11 @@ const getBulgarianVersion = getLanguageVersion("bg");
  * @param news - Array<PieceOfNews>
  */
 
-const getPreferredLanguageVersion = req => ModelKey => news =>
+const getPreferredLanguageVersion = _.curry((req, ModelKey, news) =>
 	utils.language.isBulgarian(req) ?
 		getBulgarianVersion(ModelKey)(news):
-		getEnglishVersion(ModelKey)(news);
+		getEnglishVersion(ModelKey)(news)
+);
 
 		
 const getPreferredLanguageVersionForModel = req => {

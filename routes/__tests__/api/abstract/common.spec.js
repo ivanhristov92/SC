@@ -134,9 +134,9 @@ describe("Common functions", ()=>{
 			expect(Common.getPreferredLanguageVersion(req)).to.be.a("Function")
 		});
 	
-		it('getPreferredLanguageVersion should NOT return the "getEnglishVersion" function if the language is specified as "en"', () => {
+		it('getPreferredLanguageVersion should return the "getEnglishVersion" function if the language is specified as "en"', () => {
 			let req = {params:{language: "en"}};
-			expect(Common.getPreferredLanguageVersion(req).toString()).not.to.be.eql(Common.getEnglishVersion.toString())
+			expect(Common.getPreferredLanguageVersion(req).toString()).to.be.eql(Common.getEnglishVersion.toString())
 		});
 	
 		// it('getTheDesiredAmountOfItems should NOT return the "getBulgarianVersion" function if the language is specified as "bg"', () => {
