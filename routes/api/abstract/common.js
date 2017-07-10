@@ -35,7 +35,8 @@ const _ModelInUrl = Object.freeze({
 });
 
 
-const Models = Object.defineProperties({}, _.values(ModelKeys)
+const Models = Object.defineProperties({}, 
+	_.values(ModelKeys)
 	.reduce((acc, key)=>
 		Object.assign({}, acc, {
 			[key]: {
@@ -60,34 +61,37 @@ const extractModelKey = req =>
 	.map(key=>Models[key].key);
 
 
-// extractModelType :: req -> Either<Model>
-const extractModelType = req =>{
-
-	let results = 
-		_.keys(_ModelInUrl)
-		.filter(key=>_.equals(_ModelInUrl[key], req.params.model))
-		.map(key=>Models[key].model);
+// extractModelType :: req -> Model
+const extractModelType = req =>
+	_.compose(
+		_.ifElse(
+			_.isEmpty,
+			Maybe.Nothing,
+			results => Maybe.Just(_.head(results))
+			
+		)
+		, _.map(key=>Models[key].model)
+		, _.filter(key=>_.equals(_ModelInUrl[key], req.params.model))
+		, _.always(_.keys(_ModelInUrl))
+	)();
 	
-	if(_.isEmpty(results)){
-		return Maybe.Nothing();
-	}
-	return Maybe.Just(_.head(results));
-};
 
 
-const getLanguageVersion = _.curry((lang, ModelKey, items) => {
-	
-	let fields = extractModelFields(ModelKey);
-	
-	return (items || []).map(piece =>
-		fields.reduce((accumulator, key) => {
-			let value = piece[key];
-			return Object.assign({}, accumulator, {
-				[key]: (_.equals(typeof value, "object") && _.has(lang, value)) ? value[lang] : value
-			})
-		}, {})
-	);
-});
+const getLanguageVersion = _.curry((lang, ModelKey, items) =>
+	_.compose(
+		_.map(item => 
+			extractModelFields(ModelKey)
+			.reduce((accumulator, key) => {
+				let value = item[key];
+				return Object.assign({}, accumulator, {
+					[key]: (_.equals(typeof value, "object") && _.has(lang, value)) ? value[lang] : value
+				})
+			}, {})
+		)
+		, _.defaultTo([])
+		, _.always(items)
+	)()
+);
 
 
 /**
