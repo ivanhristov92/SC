@@ -3,11 +3,11 @@
 
 const _ 		  = require("ramda");
 const Fuse 		  = require("fuse.js");
-const AllModels   = require("./common").allModels; 
+const AllModels   = require("./common.js").allModels; 
 
-const getPreferredLanguageVersion  = require("../abstract/common").getPreferredLanguageVersion;
-const sendAPIResponse 			   = require("../abstract/common").sendAPIResponse;
-const sendAPIError 			   = require("../abstract/common").sendAPIError;
+const getPreferredLanguageVersion  = require("./common").getPreferredLanguageVersion;
+const sendAPIResponse 			   = require("./common").sendAPIResponse;
+const sendAPIError 			   = require("./common").sendAPIError;
 
 const Future = require("ramda-fantasy").Future;
 

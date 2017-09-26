@@ -7,32 +7,48 @@ const utils 	= require("../utils");
 const Maybe 	= require("ramda-fantasy").Maybe;
 const Future 	= require("ramda-fantasy").Future;
 
-const ModelKeys = Object.freeze({
-	NewsKey: require("../../../models/News").ListKey,
-	AwardsKey: require("../../../models/Awards").ListKey,
-	ProductionsKey: require("../../../models/Productions").ListKey,
-	ServicesKey: require("../../../models/Services").ListKey,
-	PrizesKey: require("../../../models/Prizes").ListKey,
-});
+/*
+type Model = {
+	internalName: string,
+	path: string,
+	urlEquivalent: string
+};
+type schema = [Model];
+*/
+
+let models = require("../../../models/models-config").models;
 
 
-const ModelFields = Object.freeze({
-	[ModelKeys.NewsKey]  : require("../../../models/News")._instanceFields,
-	[ModelKeys.AwardsKey]: require("../../../models/Awards")._instanceFields,
-	[ModelKeys.ProductionsKey]: require("../../../models/Productions")._instanceFields,
-	[ModelKeys.ServicesKey]: require("../../../models/Services")._instanceFields,
-	[ModelKeys.PrizesKey]: require("../../../models/Prizes")._instanceFields,
-	getByKey: ModelKey => ModelFields[ModelKey] || []
-});
+const ModelKeys = models.reduce((acc, model) =>{
+	return Object.assign({}, acc, {[model.internalName]: require(model.path).ListKey});
+}, {});
 
 
-const _ModelInUrl = Object.freeze({
-	[ModelKeys.NewsKey]: "news",
-	[ModelKeys.AwardsKey]: "awards",
-	[ModelKeys.ProductionsKey]: "productions",
-	[ModelKeys.ServicesKey]: "services",
-	[ModelKeys.PrizesKey]: "prizes"
-});
+const __getFields__ = (path)=> {
+	let fields = Object.keys(require(path).List.schemaFields[0]);
+	return ["_id", "slug", ...fields];
+};
+
+
+const ModelFields = Object.assign(
+	{getByKey: ModelKey => ModelFields[ModelKey] || []},
+	
+	models.reduce((acc, model)=>{
+	return Object.assign(
+		acc, 
+		{[ModelKeys[model.internalName]]: __getFields__(model.path)}
+		);
+	},{})
+);
+
+
+const _ModelInUrl = Object.freeze(
+	models.reduce((acc, model)=>{
+		return Object.assign({}, acc, {
+			[ModelKeys[model.internalName]]: model.urlEquivalent
+		})
+	}, {})	
+);
 
 
 const Models = Object.defineProperties({}, 
@@ -44,7 +60,7 @@ const Models = Object.defineProperties({},
 				enumerable: true
 			},
 			toArray: {
-				value: () => _.values(Models),
+				value: function(){return _.values(Models)},
 				enumerable: false
 			}
 		}),

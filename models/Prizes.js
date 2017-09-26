@@ -32,12 +32,7 @@ List.add({
 List.defaultColumns = 'title.en, createdAt|20%';
 List.register();
 
+
 // for language selection
-exports._instanceFields = Object.freeze([
-	"_id",
-	"slug",
-	"title",
-	"content",
-	"featuredImage",
-	"createdAt"
-]);
+
+exports.List = List;
