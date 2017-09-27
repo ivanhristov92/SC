@@ -31,19 +31,16 @@ keystone.pre('render', middleware.flashMessages);
 
 // Import Route Controllers
 var routes = {
-	views: importRoutes('./views'),
+	// views: importRoutes('./views'),
 	api: importRoutes('./api')
 };
 
 // Setup Route Bindings
 exports = module.exports = function (app) {
-	// Views
-	app.get('/', routes.views.index);
 
 	// NOTE: To protect a route so that only admins can see it, use the requireUser middleware:
 	// app.get('/protected', middleware.requireUser, routes.views.protected);
 
-	// app.get('/api/post/list', keystone.middleware.api, routes.api.posts.list);
 	app.get('/api/:language/model/:model', keystone.middleware.api, routes.api.abstract.list);
 	app.get('/api/:language/model/:model/:slug', keystone.middleware.api, routes.api.abstract.getBySlug);
 	app.get('/api/:language/model/:model/id/:id', keystone.middleware.api, routes.api.abstract.getById);
@@ -51,4 +48,12 @@ exports = module.exports = function (app) {
 	// search
 	app.get('/api/:language/search', keystone.middleware.api, routes.api.abstract.getByQuery); //TODO add the getByQuery methods of the rest of the Models
 
+
+	// Client Routes
+	let staticPath = path.join(__dirname, "..", "client", "dist")
+	app.use(keystone.express.static(staticPath));
+
+	app.get('*',  function( req, res ){
+		res.sendFile('index.html', {root: staticPath});
+	});
 };
