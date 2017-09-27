@@ -4,6 +4,9 @@ import { AppContainer } from 'react-hot-loader';
 import { configureStore, history } from './redux-resources/store/configureStore';
 import Root from './Root';
 
+import "./styles/all.scss";
+
+
 const store = configureStore();
 
 render(
