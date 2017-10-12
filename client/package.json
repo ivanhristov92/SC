@@ -7,7 +7,9 @@
     "test": "",
     "start": "node server",
     "build": "rimraf dist && webpack --config ./webpack.production.config.js --progress --profile --colors",
-    "eslint": "eslint ."
+    "eslint": "eslint .",
+    
+    "createModule": "node ./utils/make-module/makeModule.js --path=../../app/modules"
   },
   "keywords": [
     "es6",
