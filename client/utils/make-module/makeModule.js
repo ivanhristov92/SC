@@ -4,52 +4,17 @@
 const fs = require('fs');
 const path = require('path');
 const _ = require("ramda");
-
+const config = require("../../.pm.config").config;
 const templates = require("./templates").actions;
-const fromArgs = require("./common").fromArgs;
+const {moduleName, moduleFolderName, fileName} = require("./naming");
 
 
-const argsName = () => fromArgs("name", "Default Module Name Value");
-const modulePath = () => fromArgs("path", "/");
-
-
-const capitalize = (word)=> {
-    return word.split("")
-        .reduce((acc, curr, i)=> {
-            return acc + ((i === 0) ? curr.toUpperCase() : curr.toLowerCase())
-        }, "")
-};
-
-const namingStrategies = {
-	pascalCase: str => str.split(" ").map(capitalize).join(""),
-	kebabCase: str => str.split(" ").map(_.toLower).join("-")
-};
-
-const moduleName = _.compose(
-	namingStrategies.pascalCase
-    , argsName
-);
-
-const moduleFolderName = _.compose(
-	namingStrategies.kebabCase
-	, argsName
-);
-
-const fileName = _.compose(
-    str => 
-		str.split(" ")
-        // remove white spaces
-        .filter(el => el !== " ")
-        .join("-")
-	
-    , _.toLower
-    , argsName
-);
+const modulePath = () => path.join(config.root , config.modules);
 
 const createModuleFolder = () => {
     let modName = moduleName();
     let modFoldName = moduleFolderName();
-    let modPath = path.join(__dirname, modulePath(), modFoldName);
+    let modPath = path.join(modulePath(), modFoldName);
 
     try{
         fs.mkdirSync(modPath);

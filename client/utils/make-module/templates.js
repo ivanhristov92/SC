@@ -17,6 +17,9 @@ const fName = {
 
 };
 
+module.exports.cName = cName;
+module.exports.fName = fName;
+
 module.exports.actions = ({moduleName, fileName}) =>`
 import ${cName.actionTypes(moduleName)} from "./${fName.actionTypes(fileName)}";
 

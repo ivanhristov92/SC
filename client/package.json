@@ -9,7 +9,8 @@
     "build": "rimraf dist && webpack --config ./webpack.production.config.js --progress --profile --colors",
     "eslint": "eslint .",
     
-    "createModule": "node ./utils/make-module/makeModule.js --path=../../app/modules"
+    "createModule": "node ./utils/make-module/makeModule.js --config=.pm.config.js",
+    "connectModule": "node ./utils/make-module/connectModule.js"
   },
   "keywords": [
     "es6",
