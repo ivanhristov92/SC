@@ -28,10 +28,10 @@ exports.moduleName = _.compose(
 	, argsName
 );
 
-exports.moduleFolderName = _.compose(
-	namingStrategies.kebabCase
+exports.moduleFolderName = (strategy) =>_.compose(
+	 (strategy === "pascalCase") ? namingStrategies.pascalCase : namingStrategies.kebabCase
 	, argsName
-);
+)();
 
 exports.fileName = _.compose(
 	str =>
