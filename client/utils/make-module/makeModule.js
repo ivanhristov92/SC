@@ -12,8 +12,10 @@ const {moduleName, moduleFolderName, fileName} = require("./naming");
 const modulePath = () => path.join(config.root , config.modules);
 
 const createModuleFolder = () => {
+    let namingStrat = config.naming ? (config.naming.moduleFolder) : null
+
     let modName = moduleName();
-    let modFoldName = moduleFolderName();
+    let modFoldName = moduleFolderName(namingStrat);
     let modPath = path.join(modulePath(), modFoldName);
 
     try{
